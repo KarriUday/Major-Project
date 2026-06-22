@@ -1,0 +1,432 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  ADMIN
+  FACULTY
+  STUDENT
+}
+
+enum CycleType {
+  MAJOR
+  MINI
+  INTERNSHIP
+}
+
+enum GroupStatus {
+  FORMING
+  FORMED
+  ALLOCATED
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
+}
+
+enum ReviewPhase {
+  R0
+  P1
+  P2
+  REVIEW
+}
+
+enum ReviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LEAVE
+}
+
+// Users
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  password          String
+  firstName         String
+  lastName          String
+  role              Role      @default(STUDENT)
+  department        String?
+  phone             String?
+  profileImage      String?
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  student           Student?
+  faculty           Faculty?
+  admin             Admin?
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Student {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  usn               String    @unique
+  cycle             String
+  section           String?
+  batch             String?
+  gpa               Float?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groups            StudentGroup[]
+  preferences       FacultyPreference[]
+  attendance        Attendance[]
+  evaluations       Evaluation[]
+  invites           GroupInvite[]
+
+  @@index([usn])
+  @@index([cycle])
+}
+
+model Faculty {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  empId             String    @unique
+  specialization    String?
+  maxGroupsAllowed  Int       @default(5)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  allocations       GroupAllocation[]
+  reviewSessions    ReviewSession[]
+  evaluations       Evaluation[]
+
+  @@index([empId])
+}
+
+model Admin {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Cycles
+model Cycle {
+  id                String    @id @default(cuid())
+  name              String
+  type              CycleType
+  academicYear      String    // e.g., "2025-26"
+  startDate         DateTime
+  endDate           DateTime
+  isActive          Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  groups            ProjectGroup[]
+  reviewSessions    ReviewSession[]
+  calendarEvents    CalendarEvent[]
+  reminders         Reminder[]
+
+  @@unique([name, academicYear])
+  @@index([isActive])
+}
+
+// Projects & Groups
+model ProjectGroup {
+  id                String    @id @default(cuid())
+  groupName         String
+  cycleId           String
+  projectTitle      String
+  projectDomain     String
+  problemStatement  String?
+  status            GroupStatus @default(FORMING)
+  maxMembers        Int       @default(4)
+  createdBy         String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  cycle             Cycle     @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  members           StudentGroup[]
+  allocations       GroupAllocation[]
+  reviewSessions    ReviewSession[]
+  evaluations       Evaluation[]
+  titleApproval     TitleApproval?
+
+  @@index([cycleId])
+  @@index([status])
+  @@unique([groupName, cycleId])
+}
+
+model StudentGroup {
+  id                String    @id @default(cuid())
+  studentId         String
+  groupId           String
+  joinedAt          DateTime  @default(now())
+  isLeader          Boolean   @default(false)
+
+  // Relations
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  group             ProjectGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, groupId])
+  @@index([groupId])
+}
+
+model GroupInvite {
+  id                String    @id @default(cuid())
+  studentId         String
+  groupId           String
+  invitedBy         String
+  status            String    @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  invitedAt         DateTime  @default(now())
+  respondedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, groupId])
+}
+
+// Allocations
+model GroupAllocation {
+  id                String    @id @default(cuid())
+  groupId           String
+  facultyId         String
+  allocationDate    DateTime  @default(now())
+  allocationStatus  String    @default("ALLOCATED") // ALLOCATED, ACTIVE, COMPLETED
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  group             ProjectGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  faculty           Faculty   @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, facultyId])
+  @@index([facultyId])
+}
+
+model FacultyPreference {
+  id                String    @id @default(cuid())
+  studentId         String
+  facultyId         String
+  preferenceRank    Int       // 1-6
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, preferenceRank])
+  @@index([studentId])
+}
+
+// Reviews & Evaluations
+model ReviewSession {
+  id                String    @id @default(cuid())
+  groupId           String
+  cycleId           String
+  facultyId         String
+  phase             ReviewPhase
+  scheduledDate     DateTime
+  location          String?
+  status            ReviewStatus @default(SCHEDULED)
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  group             ProjectGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  cycle             Cycle     @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  faculty           Faculty   @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  attendance        Attendance[]
+  evaluations       Evaluation[]
+
+  @@index([groupId])
+  @@index([cycleId])
+  @@index([facultyId])
+}
+
+model Attendance {
+  id                String    @id @default(cuid())
+  reviewSessionId   String
+  studentId         String
+  status            AttendanceStatus @default(PRESENT)
+  markedAt          DateTime  @default(now())
+  markedBy          String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  reviewSession     ReviewSession @relation(fields: [reviewSessionId], references: [id], onDelete: Cascade)
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewSessionId, studentId])
+  @@index([reviewSessionId])
+}
+
+model Evaluation {
+  id                String    @id @default(cuid())
+  groupId           String
+  reviewSessionId   String
+  facultyId         String
+  technicalScore    Int?      // 0-100
+  presentationScore Int?      // 0-100
+  documentationScore Int?     // 0-100
+  overallScore      Int?      // 0-100
+  feedback          String?
+  isSubmitted       Boolean   @default(false)
+  submittedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  group             ProjectGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  reviewSession     ReviewSession @relation(fields: [reviewSessionId], references: [id], onDelete: Cascade)
+  faculty           Faculty   @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, reviewSessionId, facultyId])
+}
+
+// Title Management
+model TitleApproval {
+  id                String    @id @default(cuid())
+  groupId           String    @unique
+  submittedTitle    String
+  approvedTitle     String?
+  status            String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  rejectionReason   String?
+  approvedBy        String?
+  submittedAt       DateTime  @default(now())
+  approvedAt        DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  group             ProjectGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+}
+
+// Calendar & Reminders
+model CalendarEvent {
+  id                String    @id @default(cuid())
+  cycleId           String
+  title             String
+  description       String?
+  eventDate         DateTime
+  eventType         String    // REVIEW, SUBMISSION, ORIENTATION, etc.
+  location          String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  cycle             Cycle     @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  reminders         Reminder[]
+
+  @@index([cycleId])
+  @@index([eventDate])
+}
+
+model Reminder {
+  id                String    @id @default(cuid())
+  cycleId           String
+  eventId           String?
+  title             String
+  description       String?
+  reminderDate      DateTime
+  reminderType      String    // EMAIL, IN_APP, BOTH
+  recipientRole     Role?     // null = all, else specific role
+  isSent            Boolean   @default(false)
+  sentAt            DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  cycle             Cycle     @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  calendarEvent     CalendarEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@index([cycleId])
+  @@index([reminderDate])
+  @@index([isSent])
+}
+
+// Notifications
+model Notification {
+  id                String    @id @default(cuid())
+  userId            String
+  title             String
+  message           String
+  notificationType  String    // EMAIL, IN_APP, SMS
+  relatedLink       String?
+  isRead            Boolean   @default(false)
+  readAt            DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+// Audit Logs
+model AuditLog {
+  id                String    @id @default(cuid())
+  userId            String
+  action            String
+  entityType        String    // User, Group, Review, etc.
+  entityId          String
+  oldValues         Json?
+  newValues         Json?
+  ipAddress         String?
+  userAgent         String?
+  createdAt         DateTime  @default(now())
+
+  // Relations
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([createdAt])
+}
+
+// File Uploads
+model FileUpload {
+  id                String    @id @default(cuid())
+  fileName          String
+  fileType          String
+  fileSize          Int
+  filePath          String
+  uploadedBy        String
+  uploadType        String    // STUDENT_DATA, CALENDAR_PDF, etc.
+  status            String    @default("COMPLETED") // PENDING, COMPLETED, FAILED
+  errorMessage      String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([uploadType])
+  @@index([uploadedBy])
+}

@@ -1,0 +1,326 @@
+[
+  {
+    "id": "batch-c244ab4701",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 1,
+    "delivered": 0,
+    "failed": 1,
+    "results": [
+      {
+        "email": "1by23cs098@bmsit.in",
+        "name": "Uday K",
+        "status": "failed",
+        "error": "(535, b'5.7.8 Username and Password not accepted. For more information, go to\\n5.7.8  https://support.google.com/mail/?p=BadCredentials 41be03b00d2f7-c851995e9d3sm911378a12.30 - gsmtp')"
+      }
+    ],
+    "createdAt": "2026-05-21T22:04:23.485051+05:30",
+    "smtpMode": "configured"
+  },
+  {
+    "id": "batch-d8ae942103",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 1,
+    "delivered": 1,
+    "failed": 0,
+    "results": [
+      {
+        "email": "1by23cs098@bmsit.in",
+        "name": "Uday K",
+        "status": "delivered",
+        "messageId": "demo-1779380495681"
+      }
+    ],
+    "createdAt": "2026-05-21T21:51:35.683739+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-cce3627f6f",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 1,
+    "delivered": 1,
+    "failed": 0,
+    "results": [
+      {
+        "email": "1by23cs098@bmsit.in",
+        "name": "Uday K",
+        "status": "delivered",
+        "messageId": "demo-1779380493469"
+      }
+    ],
+    "createdAt": "2026-05-21T21:51:33.471333+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-bf2d643707",
+    "cycle": "2025-26-major",
+    "subject": "Major Project - Live mail test",
+    "bodyPreview": "Hello Uday,\n\nYour mail service is working. This message was sent to 1by23cs098@bmsit.in with real-time notifications.\n\nThank you.",
+    "senderName": "Project Guide",
+    "senderRole": "faculty",
+    "recipientCount": 1,
+    "delivered": 1,
+    "failed": 0,
+    "results": [
+      {
+        "email": "1by23cs098@bmsit.in",
+        "name": "Uday K",
+        "status": "delivered",
+        "messageId": "demo-1779375055130"
+      }
+    ],
+    "createdAt": "2026-05-21T20:20:55.133741+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-631f046283",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Review reminder (live test)",
+    "bodyPreview": "Hello Uday,\n\nThis is a real-time test from your Project Tracking mail service. Open Student \u2192 Notifications with 1by23cs098@bmsit.in selected to see this instantly.\n\n\u2014 Faculty",
+    "senderName": "Project Guide",
+    "senderRole": "faculty",
+    "recipientCount": 1,
+    "delivered": 0,
+    "failed": 1,
+    "results": [
+      {
+        "email": "1by23cs098@bmsit.in",
+        "name": "Uday K",
+        "status": "failed",
+        "error": "'charmap' codec can't encode character '\\u2192' in position 94: character maps to <undefined>"
+      }
+    ],
+    "createdAt": "2026-05-21T20:20:19.901538+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-b1783091ef",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 3,
+    "delivered": 3,
+    "failed": 0,
+    "results": [
+      {
+        "email": "nisha@college.edu",
+        "name": "Nisha P",
+        "status": "delivered",
+        "messageId": "demo-1779374894428"
+      },
+      {
+        "email": "arjun@college.edu",
+        "name": "Arjun M",
+        "status": "delivered",
+        "messageId": "demo-1779374894430"
+      },
+      {
+        "email": "sana@college.edu",
+        "name": "Sana K",
+        "status": "delivered",
+        "messageId": "demo-1779374894432"
+      }
+    ],
+    "createdAt": "2026-05-21T20:18:14.433703+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-92dd2eb713",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 3,
+    "delivered": 3,
+    "failed": 0,
+    "results": [
+      {
+        "email": "nisha@college.edu",
+        "name": "Nisha P",
+        "status": "delivered",
+        "messageId": "demo-1779374893124"
+      },
+      {
+        "email": "arjun@college.edu",
+        "name": "Arjun M",
+        "status": "delivered",
+        "messageId": "demo-1779374893126"
+      },
+      {
+        "email": "sana@college.edu",
+        "name": "Sana K",
+        "status": "delivered",
+        "messageId": "demo-1779374893127"
+      }
+    ],
+    "createdAt": "2026-05-21T20:18:13.129809+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-f9be8fe212",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 3,
+    "delivered": 3,
+    "failed": 0,
+    "results": [
+      {
+        "email": "nisha@college.edu",
+        "name": "Nisha P",
+        "status": "delivered",
+        "messageId": "demo-1779374892172"
+      },
+      {
+        "email": "arjun@college.edu",
+        "name": "Arjun M",
+        "status": "delivered",
+        "messageId": "demo-1779374892173"
+      },
+      {
+        "email": "sana@college.edu",
+        "name": "Sana K",
+        "status": "delivered",
+        "messageId": "demo-1779374892176"
+      }
+    ],
+    "createdAt": "2026-05-21T20:18:12.177284+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-1d72dd6b1f",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 3,
+    "delivered": 3,
+    "failed": 0,
+    "results": [
+      {
+        "email": "nisha@college.edu",
+        "name": "Nisha P",
+        "status": "delivered",
+        "messageId": "demo-1779374891252"
+      },
+      {
+        "email": "arjun@college.edu",
+        "name": "Arjun M",
+        "status": "delivered",
+        "messageId": "demo-1779374891255"
+      },
+      {
+        "email": "sana@college.edu",
+        "name": "Sana K",
+        "status": "delivered",
+        "messageId": "demo-1779374891256"
+      }
+    ],
+    "createdAt": "2026-05-21T20:18:11.258480+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-b628f0518b",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 3,
+    "delivered": 3,
+    "failed": 0,
+    "results": [
+      {
+        "email": "nisha@college.edu",
+        "name": "Nisha P",
+        "status": "delivered",
+        "messageId": "demo-1779374883811"
+      },
+      {
+        "email": "arjun@college.edu",
+        "name": "Arjun M",
+        "status": "delivered",
+        "messageId": "demo-1779374883813"
+      },
+      {
+        "email": "sana@college.edu",
+        "name": "Sana K",
+        "status": "delivered",
+        "messageId": "demo-1779374883815"
+      }
+    ],
+    "createdAt": "2026-05-21T20:18:03.815824+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-4c65c0fa03",
+    "cycle": "2025-26-major",
+    "subject": "Major Project \u2014 Important Update",
+    "bodyPreview": "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+    "senderName": "Dr. Faculty Guide",
+    "senderRole": "Admin",
+    "recipientCount": 3,
+    "delivered": 3,
+    "failed": 0,
+    "results": [
+      {
+        "email": "nisha@college.edu",
+        "name": "Nisha P",
+        "status": "delivered",
+        "messageId": "demo-1779374880306"
+      },
+      {
+        "email": "arjun@college.edu",
+        "name": "Arjun M",
+        "status": "delivered",
+        "messageId": "demo-1779374880308"
+      },
+      {
+        "email": "sana@college.edu",
+        "name": "Sana K",
+        "status": "delivered",
+        "messageId": "demo-1779374880310"
+      }
+    ],
+    "createdAt": "2026-05-21T20:18:00.311235+05:30",
+    "smtpMode": "demo"
+  },
+  {
+    "id": "batch-3d2cd64993",
+    "cycle": "2025-26-major",
+    "subject": "Test from agent",
+    "bodyPreview": "Hello students",
+    "senderName": "Dr. Test",
+    "senderRole": "faculty",
+    "recipientCount": 1,
+    "delivered": 1,
+    "failed": 0,
+    "results": [
+      {
+        "email": "nisha@college.edu",
+        "name": "Nisha",
+        "status": "delivered",
+        "messageId": "demo-1779374785647"
+      }
+    ],
+    "createdAt": "2026-05-21T20:16:25.649140+05:30",
+    "smtpMode": "demo"
+  }
+]

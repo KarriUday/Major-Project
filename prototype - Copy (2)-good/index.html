@@ -1,0 +1,3922 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Tracking & Allocation System — Prototype</title>
+  <meta name="description"
+    content="Clickable UI prototype for an academic project tracking, allocation, and review scheduling system." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            ink: "#0B1220",
+            muted: "#64748B",
+            panel: "#0B1220",
+            surface: "#0B1220",
+            line: "rgba(15, 23, 42, 0.12)",
+            brand: {
+              50: "#fdf4ff",
+              100: "#fae8ff",
+              200: "#f5d0fe",
+              300: "#f0abfc",
+              400: "#e879f9",
+              500: "#d946ef",
+              600: "#c026d3",
+              700: "#a21caf",
+            },
+            ok: "#16A34A",
+            warn: "#F59E0B",
+            bad: "#DC2626",
+          },
+          boxShadow: {
+            crisp:
+              "0 2px 20px -5px rgba(217, 70, 239, 0.15), 0 8px 30px rgba(15, 23, 42, 0.08)",
+            glow:
+              "0 0 20px rgba(217, 70, 239, 0.3), 0 0 40px rgba(217, 70, 239, 0.1)",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+    }
+
+    .bg-grid {
+      background-image: radial-gradient(rgba(15, 23, 42, 0.07) 1px,
+          transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    .mono {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg,
+          rgba(148, 163, 184, 0.15),
+          rgba(148, 163, 184, 0.25),
+          rgba(148, 163, 184, 0.15));
+      background-size: 200% 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50/50 text-slate-900 selection:bg-brand-500/30">
+  <div
+    class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(217,70,239,0.15),rgba(255,255,255,0))]">
+  </div>
+  <div
+    class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_60%_60%_at_100%_100%,rgba(168,85,247,0.12),rgba(255,255,255,0))] pointer-events-none">
+  </div>
+  <div
+    class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_50%_50%_at_0%_50%,rgba(99,102,241,0.08),rgba(255,255,255,0))] pointer-events-none">
+  </div>
+  <div class="bg-grid min-h-screen">
+    <header
+      class="sticky top-0 z-40 border-b border-white/20 bg-white/60 backdrop-blur-xl shadow-sm transition-all duration-300">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 text-white shadow" aria-hidden="true">
+              <span class="text-sm font-semibold">PT</span>
+            </div>
+            <div class="leading-tight">
+              <div class="text-sm font-semibold tracking-tight">
+                Project Tracking & Allocation
+              </div>
+              <div class="text-xs text-slate-500">
+                Clickable prototype (mock data)
+              </div>
+            </div>
+          </div>
+
+          <div class="hidden items-center gap-3 md:flex">
+            <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+              <span class="text-xs text-slate-500">Cycle</span>
+              <select id="cycleSelect"
+                class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-brand-200">
+                <option value="2025-26-major">2025–26 · Major Projects</option>
+                <option value="2025-26-mini">2025–26 · Mini Projects</option>
+                <option value="2025-26-intern">2025–26 · Internships</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+              <span class="text-xs text-slate-500">Role</span>
+              <select id="roleSelect"
+                class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-brand-200">
+                <option value="admin">Admin</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+              <span class="text-xs text-slate-500">Mode</span>
+              <select id="modeSelect"
+                class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-brand-200">
+                <option value="present">Presentation</option>
+                <option value="detailed">Detailed</option>
+              </select>
+            </div>
+
+            <button id="shareBtn"
+              class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50">
+              Copy share link
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2 md:hidden">
+            <button id="mobileMenuBtn"
+              class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm">
+              Menu
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="py-5">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <aside id="sidebar"
+            class="hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm lg:col-span-3 lg:block">
+            <div class="flex items-center justify-between px-2 pb-2">
+              <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Navigation
+              </div>
+              <span id="navRoleBadge"
+                class="rounded-full bg-brand-50 px-2 py-1 text-xs font-medium text-brand-700">Admin</span>
+            </div>
+
+            <nav class="space-y-1" id="nav"></nav>
+
+            <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+              <div class="text-sm font-semibold">What you can demo</div>
+              <ul class="mt-2 space-y-1 text-sm text-slate-600">
+                <li class="flex gap-2">
+                  <span class="mono text-slate-400">1</span>
+                  Admin upload → allocate → schedule
+                </li>
+                <li class="flex gap-2">
+                  <span class="mono text-slate-400">2</span>
+                  Student group formation (invites) + 6 prefs
+                </li>
+                <li class="flex gap-2">
+                  <span class="mono text-slate-400">3</span>
+                  Faculty attendance + evaluation
+                </li>
+              </ul>
+            </div>
+          </aside>
+
+          <main class="lg:col-span-9">
+            <div
+              class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm shadow-crisp transition-all duration-300 hover:shadow-lg">
+              <div class="border-b border-slate-200 px-5 py-4">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <div id="pageTitle" class="text-lg font-semibold tracking-tight">
+                      Dashboard
+                    </div>
+                    <div id="pageSubtitle" class="mt-1 text-sm text-slate-600">
+                      Overview of the current cycle with operational shortcuts.
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span id="cyclePill"
+                      class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">2025–26 · Major
+                      Projects</span>
+                    <span id="statusPill"
+                      class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Prototype</span>
+                    <span id="mailStatusPill"
+                      class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Mail: …</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="content" class="p-5"></div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+              <div>
+                Tip: Use “Role” dropdown → switch between Admin / Student /
+                Faculty screens.
+              </div>
+              <div class="mono">
+                v0 · UI only (no backend wired)
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile nav sheet -->
+    <div id="mobileSheet" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+      <div class="absolute inset-0 bg-slate-900/40" id="mobileSheetBackdrop"></div>
+      <div class="absolute right-0 top-0 h-full w-[88%] max-w-sm border-l border-slate-200 bg-white p-4 shadow-2xl"
+        role="dialog" aria-modal="true">
+        <div class="flex items-center justify-between">
+          <div class="text-sm font-semibold">Menu</div>
+          <button id="mobileSheetClose" class="rounded-xl border border-slate-200 px-3 py-2 text-sm">
+            Close
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <div class="text-xs text-slate-500">Role</div>
+            <select id="roleSelectMobile"
+              class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200">
+              <option value="admin">Admin</option>
+              <option value="student">Student</option>
+              <option value="faculty">Faculty</option>
+            </select>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <div class="text-xs text-slate-500">Cycle</div>
+            <select id="cycleSelectMobile"
+              class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200">
+              <option value="2025-26-major">2025–26 · Major Projects</option>
+              <option value="2025-26-mini">2025–26 · Mini Projects</option>
+              <option value="2025-26-intern">2025–26 · Internships</option>
+            </select>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <div class="text-xs text-slate-500">Mode</div>
+            <select id="modeSelectMobile"
+              class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200">
+              <option value="present">Presentation</option>
+              <option value="detailed">Detailed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Navigation
+          </div>
+          <nav class="mt-2 space-y-1" id="navMobile"></nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      role: "admin",
+      cycle: "2025-26-major",
+      route: "dashboard",
+      mode: "present", // present | detailed
+    };
+
+    const storageKeys = {
+      orientations: "pts.orientations.v1",
+      students: "pts.students.v1",
+      importBatches: "pts.importBatches.v1",
+      calendarImports: "pts.calendarImports.v1",
+      calendarEvents: "pts.calendarEvents.v1",
+      reminders: "pts.reminders.v1",
+      mailApi: "pts.mailApi.v1",
+      studentEmail: "pts.studentEmail.v1",
+      mailNotifications: "pts.mailNotifications.v1",
+      facultySender: "pts.facultySender.v1",
+    };
+    const memoryFallback = {
+      orientations: null,
+      students: null,
+      importBatches: null,
+      calendarImports: null,
+      calendarEvents: null,
+      reminders: null,
+    };
+    const storageStatus = {
+      ok: true,
+      message: "",
+    };
+
+    const cycles = {
+      "2025-26-major": "2025–26 · Major Projects",
+      "2025-26-mini": "2025–26 · Mini Projects",
+      "2025-26-intern": "2025–26 · Internships",
+    };
+
+    const navByRole = {
+      admin: {
+        present: [
+          { id: "dashboard", label: "Overview" },
+          { id: "imports", label: "Upload Data" },
+          { id: "orientation", label: "Orientation" },
+          { id: "calendar", label: "Calendar PDF" },
+          { id: "mail-service", label: "Mail Center" },
+          { id: "allocation", label: "Allocation" },
+          { id: "reviews", label: "Reviews & Reminders" },
+          { id: "reports", label: "Exports" },
+        ],
+        detailed: [
+          { id: "dashboard", label: "Dashboard" },
+          { id: "imports", label: "Data Ingestion (Upload)" },
+          { id: "orientation", label: "Orientation" },
+          { id: "calendar", label: "Calendar PDF → Reminders" },
+          { id: "mail-service", label: "Mail Center" },
+          { id: "students", label: "Students" },
+          { id: "faculty", label: "Faculty" },
+          { id: "groups", label: "Groups" },
+          { id: "allocation", label: "Allocation" },
+          { id: "reviews", label: "Reviews & Scheduling" },
+          { id: "attendance", label: "Attendance & Evaluation" },
+          { id: "titles", label: "Title Registry & Duplication" },
+          { id: "reports", label: "Reports & Exports" },
+          { id: "settings", label: "Settings" },
+        ],
+      },
+      student: {
+        present: [
+          { id: "dashboard", label: "Overview" },
+          { id: "invites", label: "Form Group" },
+          { id: "domain", label: "Problem Statement" },
+          { id: "preferences", label: "Guide Preferences" },
+          { id: "timeline", label: "Timeline" },
+          { id: "reminders", label: "Reminders" },
+          { id: "notifications", label: "Notifications" },
+        ],
+        detailed: [
+          { id: "dashboard", label: "Dashboard" },
+          { id: "my-group", label: "My Group" },
+          { id: "invites", label: "Invites" },
+          { id: "domain", label: "Domain & Problem Statement" },
+          { id: "preferences", label: "Guide Preferences (1–6)" },
+          { id: "timeline", label: "Review Timeline" },
+          { id: "reminders", label: "Reminders" },
+          { id: "notifications", label: "Notifications" },
+        ],
+      },
+      faculty: {
+        present: [
+          { id: "dashboard", label: "Overview" },
+          { id: "orientation", label: "Orientation" },
+          { id: "mail-service", label: "Mail Center" },
+          { id: "assigned", label: "My Groups" },
+          { id: "mark-attendance", label: "Attendance" },
+          { id: "evaluate", label: "Evaluation" },
+        ],
+        detailed: [
+          { id: "dashboard", label: "Dashboard" },
+          { id: "orientation", label: "Orientation" },
+          { id: "mail-service", label: "Mail Center" },
+          { id: "assigned", label: "Assigned Groups" },
+          { id: "review-sessions", label: "Review Sessions" },
+          { id: "mark-attendance", label: "Mark Attendance" },
+          { id: "evaluate", label: "Evaluate Groups" },
+          { id: "title-approval", label: "Title Approval" },
+        ],
+      },
+    };
+
+    function el(tag, attrs = {}, children = []) {
+      const node = document.createElement(tag);
+      for (const [k, v] of Object.entries(attrs)) {
+        if (k === "class") node.className = v;
+        else if (k.startsWith("on") && typeof v === "function")
+          node.addEventListener(k.slice(2).toLowerCase(), v);
+        else if (k === "html") node.innerHTML = v;
+        else node.setAttribute(k, v);
+      }
+      for (const child of children) {
+        if (typeof child === "string") node.appendChild(document.createTextNode(child));
+        else if (child) node.appendChild(child);
+      }
+      return node;
+    }
+
+    function pill(text, tone) {
+      const map = {
+        ok: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100",
+        warn: "bg-amber-50 text-amber-700 ring-1 ring-amber-100",
+        bad: "bg-rose-50 text-rose-700 ring-1 ring-rose-100",
+        info: "bg-brand-50 text-brand-700 ring-1 ring-brand-100",
+        neutral: "bg-slate-100 text-slate-700 ring-1 ring-slate-200",
+      };
+      return el("span", { class: `inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${map[tone] || map.neutral}` }, [text]);
+    }
+
+    function button(label, tone = "primary") {
+      const styles =
+        tone === "primary"
+          ? "bg-gradient-to-r from-brand-500 to-brand-600 text-white hover:from-brand-600 hover:to-brand-700 hover:shadow-glow border border-transparent"
+          : tone === "danger"
+            ? "bg-rose-600 text-white hover:bg-rose-700 border border-transparent"
+            : "border border-slate-200 bg-white hover:bg-slate-50 hover:border-brand-200 hover:text-brand-700";
+      return el("button", {
+        class: `rounded-xl px-4 py-2 text-sm font-semibold shadow-sm transition-all duration-300 hover:-translate-y-[2px] active:translate-y-[1px] active:scale-[0.98] ${styles}`,
+        type: "button",
+      }, [label]);
+    }
+
+    function card(title, value, meta, tone = "neutral") {
+      return el("div", { class: "group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md" }, [
+        el("div", { class: "pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" }),
+        el("div", { class: "relative z-10 flex items-start justify-between gap-3" }, [
+          el("div", {}, [
+            el("div", { class: "text-sm font-semibold" }, [title]),
+            el("div", { class: "mt-2 text-2xl font-semibold tracking-tight mono" }, [value]),
+            el("div", { class: "mt-1 text-xs text-slate-500" }, [meta]),
+          ]),
+          pill(tone === "neutral" ? "OK" : tone.toUpperCase(), tone === "neutral" ? "neutral" : tone),
+        ]),
+      ]);
+    }
+
+    function table(headers, rows) {
+      const thead = el("thead", {}, [
+        el("tr", { class: "text-left text-xs font-semibold uppercase tracking-wider text-slate-500" },
+          headers.map(h => el("th", { class: "px-3 py-2" }, [h]))
+        ),
+      ]);
+      const tbody = el("tbody", { class: "divide-y divide-slate-100" }, rows.map(r => {
+        return el("tr", { class: "hover:bg-slate-50/60" }, r.map(cell => el("td", { class: "px-3 py-3 text-sm text-slate-700" }, [cell])));
+      }));
+      return el("div", { class: "overflow-hidden rounded-2xl border border-slate-200" }, [
+        el("table", { class: "w-full" }, [thead, tbody]),
+      ]);
+    }
+
+    function sectionTitle(title, subtitle, actions = []) {
+      return el("div", { class: "mb-4 flex flex-wrap items-start justify-between gap-3" }, [
+        el("div", {}, [
+          el("div", { class: "text-base font-semibold tracking-tight" }, [title]),
+          el("div", { class: "mt-1 text-sm text-slate-600" }, [subtitle || ""]),
+        ]),
+        el("div", { class: "flex flex-wrap items-center gap-2" }, actions),
+      ]);
+    }
+
+    function detailsBlock(title, summary, bodyNodes = []) {
+      return el("details", { class: "group rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+        el("summary", { class: "cursor-pointer list-none select-none" }, [
+          el("div", { class: "flex items-start justify-between gap-3" }, [
+            el("div", {}, [
+              el("div", { class: "text-sm font-semibold tracking-tight" }, [title]),
+              el("div", { class: "mt-1 text-sm text-slate-600" }, [summary || ""]),
+            ]),
+            el("div", { class: "text-xs text-slate-500 group-open:hidden" }, ["Show"]),
+            el("div", { class: "hidden text-xs text-slate-500 group-open:block" }, ["Hide"]),
+          ]),
+        ]),
+        el("div", { class: "mt-4 space-y-3" }, bodyNodes),
+      ]);
+    }
+
+    function resetStorageStatus() {
+      storageStatus.ok = true;
+      storageStatus.message = "";
+    }
+
+    let pdfJsPromise = null;
+    async function getPdfJs() {
+      if (pdfJsPromise) return pdfJsPromise;
+      pdfJsPromise = import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs").then((m) => {
+        const pdfjsLib = m;
+        // worker needed for reliable parsing
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+        return pdfjsLib;
+      });
+      return pdfJsPromise;
+    }
+
+    async function extractPdfText(file) {
+      const pdfjsLib = await getPdfJs();
+      const buf = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      let out = "";
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const content = await page.getTextContent();
+        const strings = content.items.map((it) => ("str" in it ? it.str : "")).filter(Boolean);
+        // Keep some structure from the PDF (helps calendars that rely on line breaks)
+        out += strings.join("\n") + "\n\n";
+      }
+      return out.replace(/[ \t\f\v]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+    }
+
+    function localDateKey(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function parseFlexibleDate(str) {
+      const s = safeTrim(str);
+      if (!s) return null;
+
+      const monthMap = {
+        jan: 0,
+        january: 0,
+        feb: 1,
+        february: 1,
+        mar: 2,
+        march: 2,
+        apr: 3,
+        april: 3,
+        may: 4,
+        jun: 5,
+        june: 5,
+        jul: 6,
+        july: 6,
+        aug: 7,
+        august: 7,
+        sep: 8,
+        sept: 8,
+        september: 8,
+        oct: 9,
+        october: 9,
+        nov: 10,
+        november: 10,
+        dec: 11,
+        december: 11,
+      };
+
+      // DD-DD Month (optional year), e.g. "05-06 march" or "24-25 april 2026"
+      let m = s.match(/\b(\d{1,2})\s*[-–—]\s*(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{4}))?\b/i);
+      if (m) {
+        const d1 = Number(m[1]);
+        const d2 = Number(m[2]);
+        void d2;
+        const monKey = String(m[3]).toLowerCase();
+        const mon = monthMap[monKey];
+        const yyyy = m[4] ? Number(m[4]) : new Date().getFullYear();
+        if (mon !== undefined && Number.isFinite(yyyy)) {
+          // Use the first day as the canonical event date (good enough for reminders)
+          const d = new Date(yyyy, mon, d1);
+          if (d.getFullYear() === yyyy && d.getMonth() === mon && d.getDate() === d1) return d;
+          // If day is invalid for month, fall through
+        }
+      }
+
+      // DD Month (optional year), e.g. "12 april"
+      m = s.match(/\b(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{4}))?\b/i);
+      if (m) {
+        const dd = Number(m[1]);
+        const monKey = String(m[2]).toLowerCase();
+        const mon = monthMap[monKey];
+        const yyyy = m[3] ? Number(m[3]) : new Date().getFullYear();
+        if (mon !== undefined && Number.isFinite(yyyy)) {
+          const d = new Date(yyyy, mon, dd);
+          if (d.getFullYear() === yyyy && d.getMonth() === mon && d.getDate() === dd) return d;
+        }
+      }
+
+      // DD/MM/YYYY or DD-MM-YYYY
+      m = s.match(/\b(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})\b/);
+      if (m) {
+        const dd = Number(m[1]);
+        const mm = Number(m[2]) - 1;
+        const yyyy = Number(m[3]);
+        const d = new Date(yyyy, mm, dd);
+        if (d.getFullYear() === yyyy && d.getMonth() === mm && d.getDate() === dd) return d;
+      }
+
+      // YYYY-MM-DD
+      m = s.match(/\b(\d{4})-(\d{2})-(\d{2})\b/);
+      if (m) {
+        const yyyy = Number(m[1]);
+        const mm = Number(m[2]) - 1;
+        const dd = Number(m[3]);
+        const d = new Date(yyyy, mm, dd);
+        if (d.getFullYear() === yyyy && d.getMonth() === mm && d.getDate() === dd) return d;
+      }
+
+      // 12 Apr 2026 / Apr 12, 2026
+      m = s.match(/\b(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})\b/);
+      if (m) {
+        const dd = Number(m[1]);
+        const monKey = String(m[2]).toLowerCase();
+        const mon = monthMap[monKey] ?? monthMap[String(m[2]).slice(0, 3).toLowerCase()];
+        const yyyy = Number(m[3]);
+        if (mon === undefined) return null;
+        const d = new Date(yyyy, mon, dd);
+        if (d.getFullYear() === yyyy && d.getMonth() === mon && d.getDate() === dd) return d;
+      }
+      m = s.match(/\b([A-Za-z]{3,9})\s+(\d{1,2}),\s*(\d{4})\b/);
+      if (m) {
+        const monKey = String(m[1]).toLowerCase();
+        const mon = monthMap[monKey] ?? monthMap[String(m[1]).slice(0, 3).toLowerCase()];
+        const dd = Number(m[2]);
+        const yyyy = Number(m[3]);
+        if (mon === undefined) return null;
+        const d = new Date(yyyy, mon, dd);
+        if (d.getFullYear() === yyyy && d.getMonth() === mon && d.getDate() === dd) return d;
+      }
+
+      return null;
+    }
+
+    function guessReviewPhase(text) {
+      const t = String(text || "").toLowerCase();
+      if (/\br0\b|review\s*0|review[-\s]*0|problem\s*statement/i.test(t)) return "R0";
+      if (/\bp1\b|phase\s*1|review\s*1|review[-\s]*1/i.test(t)) return "P1";
+      if (/\bp2\b|phase\s*2|review\s*2|review[-\s]*2/i.test(t)) return "P2";
+      if (/\bmajor\b.*\breview\b|\breview\b.*\bmajor\b|\bviva\b|\bpresentation\b/i.test(t)) return "REVIEW";
+      return "REVIEW";
+    }
+
+    function looksLikeReviewLine(line) {
+      const l = String(line || "");
+      const low = l.toLowerCase();
+      return (
+        /\breview\b/i.test(low) ||
+        /\bmajor\b/i.test(low) ||
+        /\bviva\b/i.test(low) ||
+        /\bpresentation\b/i.test(low) ||
+        /\br0\b/i.test(low) ||
+        /\bp1\b/i.test(low) ||
+        /\bp2\b/i.test(low)
+      );
+    }
+
+    function extractReviewEventsFromText(rawText) {
+      const text = String(rawText || "");
+      const lines = text
+        .split(/\n+/)
+        .map((x) => safeTrim(x))
+        .filter(Boolean);
+
+      const events = [];
+      const seen = new Set();
+
+      function pushEvent(line, d, confidence) {
+        const key = `${localDateKey(d)}|${guessReviewPhase(line)}|${line.slice(0, 120)}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        events.push({
+          id: "ev-" + Math.random().toString(16).slice(2),
+          title: guessReviewPhase(line) === "REVIEW" ? "Major project review" : `${guessReviewPhase(line)} review`,
+          phase: guessReviewPhase(line),
+          eventDate: localDateKey(d),
+          confidence,
+          sourceLine: line,
+        });
+      }
+
+      for (const line of lines) {
+        if (!looksLikeReviewLine(line)) continue;
+        const d = parseFlexibleDate(line);
+        if (!d) continue;
+        pushEvent(line, d, "medium");
+      }
+
+      // Regex pass over the whole blob (handles single-line pastes like "review-1 ... review-2 ...")
+      const blob = safeTrim(text.replace(/\s+/g, " "));
+      if (blob) {
+        const re =
+          /(major\s+project\s+review(?:\s*[-–—:]?\s*\d+)?|review(?:\s*[-–—:]?\s*\d+)?|\br0\b|\bp1\b|\bp2\b)[^0-9]{0,60}((\d{1,2})\s*[-–—]\s*(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{4}))?|(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{4}))?|(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4}))/gi;
+        let mm;
+        while ((mm = re.exec(blob)) !== null) {
+          const left = mm[1] || "";
+          const datePart = mm[2] || "";
+          const line = `${left} ${datePart}`.trim();
+          if (!looksLikeReviewLine(line)) continue;
+          const d = parseFlexibleDate(line);
+          if (!d) continue;
+          pushEvent(line, d, "medium");
+        }
+      }
+
+      // If nothing matched line-by-line, try scanning whole blob for dates near keywords
+      if (!events.length) {
+        const chunks = text.split(/(?<=[\.\n;])/g);
+        for (const chunk of chunks) {
+          const c = safeTrim(chunk);
+          if (!c) continue;
+          if (!looksLikeReviewLine(c)) continue;
+          const d = parseFlexibleDate(c);
+          if (!d) continue;
+          pushEvent(c, d, "low");
+        }
+      }
+
+      events.sort((a, b) => String(a.eventDate).localeCompare(String(b.eventDate)));
+      return events;
+    }
+
+    function weekBeforeAt9amLocalIso(eventDateKey) {
+      // eventDateKey is YYYY-MM-DD (local)
+      const [y, m, d] = eventDateKey.split("-").map((x) => Number(x));
+      const event = new Date(y, m - 1, d, 0, 0, 0, 0);
+      const remind = new Date(event);
+      remind.setDate(remind.getDate() - 7);
+      remind.setHours(9, 0, 0, 0);
+      return remind.toISOString();
+    }
+
+    function loadOrientations() {
+      resetStorageStatus();
+      try {
+        const raw = localStorage.getItem(storageKeys.orientations);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Browser storage is blocked for this page. The demo will still work, but data may not save. Try opening in a normal window (not strict privacy mode) or run a simple local server later.";
+        return Array.isArray(memoryFallback.orientations)
+          ? memoryFallback.orientations
+          : [];
+      }
+    }
+
+    function saveOrientations(list) {
+      try {
+        localStorage.setItem(storageKeys.orientations, JSON.stringify(list));
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Could not save to browser storage. The demo will keep data only until you refresh.";
+        memoryFallback.orientations = list;
+      }
+    }
+
+    function loadStudents() {
+      resetStorageStatus();
+      try {
+        const raw = localStorage.getItem(storageKeys.students);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Browser storage is blocked for this page. The demo will still work, but data may not save. Try opening in a normal window (not strict privacy mode) or run a simple local server later.";
+        return Array.isArray(memoryFallback.students) ? memoryFallback.students : [];
+      }
+    }
+
+    function saveStudents(list) {
+      try {
+        localStorage.setItem(storageKeys.students, JSON.stringify(list));
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Could not save to browser storage. The demo will keep data only until you refresh.";
+        memoryFallback.students = list;
+      }
+    }
+
+    function loadImportBatches() {
+      resetStorageStatus();
+      try {
+        const raw = localStorage.getItem(storageKeys.importBatches);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Browser storage is blocked for this page. The demo will still work, but data may not save. Try opening in a normal window (not strict privacy mode) or run a simple local server later.";
+        return Array.isArray(memoryFallback.importBatches) ? memoryFallback.importBatches : [];
+      }
+    }
+
+    function saveImportBatches(list) {
+      try {
+        localStorage.setItem(storageKeys.importBatches, JSON.stringify(list));
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Could not save to browser storage. The demo will keep data only until you refresh.";
+        memoryFallback.importBatches = list;
+      }
+    }
+
+    function loadCalendarImports() {
+      resetStorageStatus();
+      try {
+        const raw = localStorage.getItem(storageKeys.calendarImports);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Browser storage is blocked for this page. The demo will still work, but data may not save. Try opening in a normal window (not strict privacy mode) or run a simple local server later.";
+        return Array.isArray(memoryFallback.calendarImports) ? memoryFallback.calendarImports : [];
+      }
+    }
+
+    function saveCalendarImports(list) {
+      try {
+        localStorage.setItem(storageKeys.calendarImports, JSON.stringify(list));
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Could not save to browser storage. The demo will keep data only until you refresh.";
+        memoryFallback.calendarImports = list;
+      }
+    }
+
+    function loadCalendarEvents() {
+      resetStorageStatus();
+      try {
+        const raw = localStorage.getItem(storageKeys.calendarEvents);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Browser storage is blocked for this page. The demo will still work, but data may not save. Try opening in a normal window (not strict privacy mode) or run a simple local server later.";
+        return Array.isArray(memoryFallback.calendarEvents) ? memoryFallback.calendarEvents : [];
+      }
+    }
+
+    function saveCalendarEvents(list) {
+      try {
+        localStorage.setItem(storageKeys.calendarEvents, JSON.stringify(list));
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Could not save to browser storage. The demo will keep data only until you refresh.";
+        memoryFallback.calendarEvents = list;
+      }
+    }
+
+    function loadReminders() {
+      resetStorageStatus();
+      try {
+        const raw = localStorage.getItem(storageKeys.reminders);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Browser storage is blocked for this page. The demo will still work, but data may not save. Try opening in a normal window (not strict privacy mode) or run a simple local server later.";
+        return Array.isArray(memoryFallback.reminders) ? memoryFallback.reminders : [];
+      }
+    }
+
+    function saveReminders(list) {
+      try {
+        localStorage.setItem(storageKeys.reminders, JSON.stringify(list));
+      } catch {
+        storageStatus.ok = false;
+        storageStatus.message =
+          "Could not save to browser storage. The demo will keep data only until you refresh.";
+        memoryFallback.reminders = list;
+      }
+    }
+
+    function refreshReminderStatuses(reminders) {
+      const now = Date.now();
+      return reminders.map((r) => {
+        if (r.status === "SENT") return r;
+        const due = new Date(r.dueAt).getTime();
+        if (Number.isFinite(due) && now >= due) return { ...r, status: "DUE" };
+        return { ...r, status: "QUEUED" };
+      });
+    }
+
+    function studentEmailsForCycle(cycle) {
+      return loadStudents()
+        .filter((s) => s.cycle === cycle)
+        .map((s) => normalizeEmail(s.email))
+        .filter(Boolean);
+    }
+
+    function buildStudentMailtoAll(cycle, subject, body) {
+      const to = studentEmailsForCycle(cycle);
+      if (!to.length) return "";
+      const s = encodeURIComponent(subject || "");
+      const b = encodeURIComponent(body || "");
+      // Bcc keeps recipient list less awkward in the draft UI
+      return `mailto:?bcc=${encodeURIComponent(to.join(","))}&subject=${s}&body=${b}`;
+    }
+
+    function nowIso() {
+      return new Date().toISOString();
+    }
+
+    function normalizeEmail(s) {
+      return String(s || "").trim().toLowerCase();
+    }
+
+    const mailState = {
+      connected: false,
+      smtpMode: "unknown",
+      realEmailEnabled: false,
+      eventSource: null,
+      pollTimer: null,
+      config: null,
+      subscribedEmail: null,
+    };
+
+    function getMailApiBase() {
+      try {
+        return localStorage.getItem(storageKeys.mailApi) || "http://localhost:3001";
+      } catch {
+        return "http://localhost:3001";
+      }
+    }
+
+    function setMailApiBase(url) {
+      try {
+        localStorage.setItem(storageKeys.mailApi, String(url || "").trim().replace(/\/$/, ""));
+      } catch { /* ignore */ }
+    }
+
+    function getStudentViewerEmail() {
+      try {
+        const saved = localStorage.getItem(storageKeys.studentEmail);
+        if (saved) return normalizeEmail(saved);
+      } catch { /* ignore */ }
+      ensureDemoStudents();
+      const mine = loadStudents().find(
+        (s) => s.cycle === state.cycle && normalizeEmail(s.email) === "1by23cs098@bmsit.in"
+      );
+      if (mine) return normalizeEmail(mine.email);
+      const first = loadStudents().find((s) => s.cycle === state.cycle);
+      return first ? normalizeEmail(first.email) : "1by23cs098@bmsit.in";
+    }
+
+    function setStudentViewerEmail(email) {
+      try {
+        localStorage.setItem(storageKeys.studentEmail, normalizeEmail(email));
+      } catch { /* ignore */ }
+    }
+
+    function getFacultySenderName() {
+      try {
+        return localStorage.getItem(storageKeys.facultySender) || "Dr. Faculty Guide";
+      } catch {
+        return "Dr. Faculty Guide";
+      }
+    }
+
+    function setFacultySenderName(name) {
+      try {
+        localStorage.setItem(storageKeys.facultySender, safeTrim(name) || "Faculty");
+      } catch { /* ignore */ }
+    }
+
+    function loadLocalMailNotifications() {
+      try {
+        const raw = localStorage.getItem(storageKeys.mailNotifications);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLocalMailNotifications(list) {
+      try {
+        localStorage.setItem(storageKeys.mailNotifications, JSON.stringify(list.slice(0, 200)));
+      } catch { /* ignore */ }
+    }
+
+    function upsertLocalMailNotification(notif) {
+      const list = loadLocalMailNotifications();
+      const idx = list.findIndex((n) => n.id === notif.id);
+      if (idx >= 0) list[idx] = notif;
+      else list.unshift(notif);
+      saveLocalMailNotifications(list);
+    }
+
+    function getLocalNotificationsForStudent(email, cycle) {
+      const e = normalizeEmail(email);
+      return loadLocalMailNotifications()
+        .filter((n) => normalizeEmail(n.toEmail) === e && (!cycle || n.cycle === cycle))
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    async function fetchMailConfig() {
+      const base = getMailApiBase();
+      const res = await fetch(`${base}/api/mail/config`);
+      if (!res.ok) throw new Error("Mail server unreachable");
+      return res.json();
+    }
+
+    async function saveGmailSmtpConfig(smtpUser, smtpPass) {
+      const base = getMailApiBase();
+      const res = await fetch(`${base}/api/mail/smtp-config`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          smtpUser: normalizeEmail(smtpUser),
+          smtpPass: String(smtpPass || "").replace(/\s/g, ""),
+          smtpHost: "smtp.gmail.com",
+          smtpPort: 587,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || "Gmail setup failed");
+      mailState.config = data;
+      mailState.smtpMode = "configured";
+      mailState.realEmailEnabled = true;
+      updateMailStatusPill();
+      return data;
+    }
+
+    async function sendGmailTest(toEmail) {
+      const base = getMailApiBase();
+      const res = await fetch(`${base}/api/mail/smtp-test`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: normalizeEmail(toEmail) }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || "Test send failed");
+      return data;
+    }
+
+    function isRealGmailEnabled() {
+      return mailState.realEmailEnabled === true || mailState.smtpMode === "configured";
+    }
+
+    async function fetchMailHealth() {
+      const base = getMailApiBase();
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
+      try {
+        const res = await fetch(`${base}/api/health`, { signal: controller.signal });
+        return res.ok;
+      } catch {
+        return false;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function sendMailBatch({ cycle, subject, body, recipients, senderName, senderRole, reminderId }) {
+      const base = getMailApiBase();
+      const res = await fetch(`${base}/api/mail/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cycle,
+          subject,
+          body,
+          recipients,
+          senderName: senderName || getFacultySenderName(),
+          senderRole: senderRole || state.role,
+          reminderId: reminderId || null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || "Send failed");
+      return data;
+    }
+
+    async function fetchMailHistory(cycle) {
+      const base = getMailApiBase();
+      const q = cycle ? `?cycle=${encodeURIComponent(cycle)}` : "";
+      const res = await fetch(`${base}/api/mail/history${q}`);
+      if (!res.ok) throw new Error("Could not load mail history");
+      return (await res.json()).history || [];
+    }
+
+    async function fetchServerNotifications(email, cycle) {
+      const base = getMailApiBase();
+      const q = new URLSearchParams({ email });
+      if (cycle) q.set("cycle", cycle);
+      const res = await fetch(`${base}/api/notifications?${q}`);
+      if (!res.ok) return [];
+      return (await res.json()).notifications || [];
+    }
+
+    function studentsAsRecipients(cycle) {
+      return loadStudents()
+        .filter((s) => s.cycle === cycle)
+        .map((s) => ({
+          email: normalizeEmail(s.email),
+          fullName: s.fullName,
+          usn: s.usn,
+        }))
+        .filter((r) => r.email);
+    }
+
+    function disconnectMailRealtime() {
+      if (mailState.eventSource) {
+        try {
+          mailState.eventSource.close();
+        } catch { /* ignore */ }
+        mailState.eventSource = null;
+      }
+      if (mailState.pollTimer) {
+        clearInterval(mailState.pollTimer);
+        mailState.pollTimer = null;
+      }
+      mailState.subscribedEmail = null;
+    }
+
+    function handleIncomingMailNotif(notif, onReceived) {
+      if (!notif || notif.type === "connected" || notif.type === "ping") return;
+      const payload = notif.type === "mail:received" ? { ...notif } : notif;
+      delete payload.type;
+      upsertLocalMailNotification(payload);
+      if (typeof onReceived === "function") onReceived(payload);
+      else if (state.role === "student" && (state.route === "notifications" || state.route === "dashboard")) render();
+    }
+
+    function startMailPolling(email, onReceived) {
+      if (mailState.pollTimer) return;
+      mailState.pollTimer = setInterval(async () => {
+        try {
+          const remote = await fetchServerNotifications(email, state.cycle);
+          remote.forEach((n) => {
+            const prev = getLocalNotificationsForStudent(email, state.cycle);
+            if (!prev.some((p) => p.id === n.id)) handleIncomingMailNotif(n, onReceived);
+          });
+        } catch { /* ignore */ }
+      }, 5000);
+    }
+
+    function connectMailRealtime(email, onReceived) {
+      const normalized = normalizeEmail(email);
+      if (!normalized) return;
+      if (mailState.eventSource && mailState.subscribedEmail === normalized) return;
+      disconnectMailRealtime();
+      mailState.subscribedEmail = normalized;
+      const base = getMailApiBase();
+      try {
+        mailState.eventSource = new EventSource(
+          `${base}/api/events?email=${encodeURIComponent(normalized)}`
+        );
+        mailState.eventSource.onopen = () => {
+          mailState.connected = true;
+          updateMailStatusPill();
+        };
+        mailState.eventSource.onmessage = (ev) => {
+          try {
+            handleIncomingMailNotif(JSON.parse(ev.data), onReceived);
+          } catch { /* ignore */ }
+        };
+        mailState.eventSource.onerror = () => {
+          mailState.connected = false;
+          updateMailStatusPill();
+          startMailPolling(normalized, onReceived);
+        };
+      } catch {
+        startMailPolling(normalized, onReceived);
+      }
+    }
+
+    async function refreshMailConnection() {
+      try {
+        const ok = await fetchMailHealth();
+        if (ok) {
+          mailState.config = await fetchMailConfig();
+          mailState.smtpMode = mailState.config.smtpMode || "ok";
+          mailState.realEmailEnabled = !!mailState.config.realEmailEnabled;
+          mailState.connected = true;
+        } else {
+          mailState.connected = false;
+        }
+      } catch {
+        mailState.connected = false;
+        mailState.smtpMode = "offline";
+      }
+      updateMailStatusPill();
+      return mailState.connected;
+    }
+
+    function updateMailStatusPill() {
+      const pill = document.getElementById("mailStatusPill");
+      if (!pill) return;
+      if (!mailState.connected) {
+        pill.textContent = "Mail: offline";
+        pill.className =
+          "rounded-full bg-rose-50 px-2 py-1 text-xs font-medium text-rose-700 ring-1 ring-rose-100";
+        return;
+      }
+      if (mailState.realEmailEnabled || mailState.smtpMode === "configured") {
+        pill.textContent = "Mail: Gmail live";
+        pill.className =
+          "rounded-full bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-100";
+        return;
+      }
+      pill.textContent = "Mail: setup Gmail";
+      pill.className =
+        "rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800 ring-1 ring-amber-100";
+    }
+
+    function mailNotificationCard(n, showPreview) {
+      const tone = n.status === "delivered" ? "ok" : n.status === "failed" ? "bad" : "info";
+      return el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+        el("div", { class: "flex flex-wrap items-start justify-between gap-2" }, [
+          el("div", {}, [
+            el("div", { class: "text-sm font-semibold text-slate-900" }, [n.subject]),
+            el("div", { class: "mt-1 text-xs text-slate-600" }, [
+              `From ${n.senderName || "Faculty"} · ${formatDateTime(n.createdAt)}`,
+              n.usn ? ` · ${n.usn}` : "",
+            ]),
+          ]),
+          pill(n.status === "delivered" ? "Delivered" : n.status === "failed" ? "Failed" : "Sending", tone),
+        ]),
+        el("div", { class: "mt-2 text-sm text-slate-700 whitespace-pre-wrap" }, [(n.body || "").slice(0, 800)]),
+        showPreview && n.previewUrl
+          ? el("div", { class: "mt-2" }, [
+            el(
+              "a",
+              {
+                class: "text-sm font-medium text-brand-700 hover:underline",
+                href: n.previewUrl,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              },
+              ["View email preview (Ethereal)"]
+            ),
+          ])
+          : el("span", { class: "hidden" }, [""]),
+      ]);
+    }
+
+    function renderMailCenter(roleLabel) {
+      ensureDemoStudents();
+      const statusEl = el("div", { class: "text-sm text-slate-600" }, ["Checking mail server…"]);
+      const gmailStatusEl = el("div", { class: "text-sm text-slate-600" }, [""]);
+      const historyEl = el("div", { class: "space-y-3" }, []);
+      const sendStatusEl = el("div", { class: "text-sm text-slate-600" }, [""]);
+
+      const gmailUserInput = el("input", {
+        class:
+          "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+        type: "email",
+        placeholder: "your.name@gmail.com or 1by23cs098@bmsit.in",
+        autocomplete: "username",
+      });
+      const gmailPassInput = el("input", {
+        class:
+          "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+        type: "password",
+        placeholder: "Gmail App Password (16 letters, no spaces)",
+        autocomplete: "new-password",
+      });
+
+      const apiInput = el("input", {
+        class:
+          "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+        type: "url",
+        value: getMailApiBase(),
+        placeholder: "http://localhost:3001",
+      });
+
+      const senderInput = el("input", {
+        class:
+          "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+        type: "text",
+        value: getFacultySenderName(),
+        placeholder: "Dr. Sharma",
+      });
+
+      const subjectInput = el("input", {
+        class:
+          "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+        type: "text",
+        value: "Major Project — Important Update",
+        placeholder: "Email subject",
+      });
+
+      const bodyInput = el("textarea", {
+        class:
+          "mt-1 w-full min-h-[140px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+        placeholder: "Write your message to students…",
+      }, [
+        "Dear students,\n\nPlease ensure your group has submitted domain statement and six guide preferences before the review week.\n\nThank you.",
+      ]);
+
+      const recipientMode = { value: "all" };
+      const modeSelect = el("select", {
+        class:
+          "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+        onChange: (e) => {
+          recipientMode.value = e.target.value;
+        },
+      }, [
+        el("option", { value: "all" }, ["All students in this cycle"]),
+        el("option", { value: "bmsit", selected: "selected" }, ["Uday K · 1by23cs098@bmsit.in only"]),
+        el("option", { value: "due-reminder" }, ["Students — from first DUE reminder"]),
+      ]);
+      recipientMode.value = "bmsit";
+
+      async function loadHistory() {
+        historyEl.innerHTML = "";
+        try {
+          const hist = await fetchMailHistory(state.cycle);
+          if (!hist.length) {
+            historyEl.appendChild(
+              el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" }, [
+                "No sent mail yet for this cycle.",
+              ])
+            );
+            return;
+          }
+          hist.slice(0, 15).forEach((h) => {
+            historyEl.appendChild(
+              el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                el("div", { class: "flex flex-wrap items-center justify-between gap-2" }, [
+                  el("div", { class: "text-sm font-semibold" }, [h.subject]),
+                  pill(`${h.delivered}/${h.recipientCount} delivered`, h.failed ? "warn" : "ok"),
+                ]),
+                el("div", { class: "mt-1 text-xs text-slate-600" }, [
+                  `${formatDateTime(h.createdAt)} · ${h.senderName} · ${h.smtpMode || ""}`,
+                ]),
+                el("div", { class: "mt-1 text-sm text-slate-700" }, [(h.bodyPreview || "").slice(0, 120)]),
+              ])
+            );
+          });
+        } catch (e) {
+          historyEl.appendChild(
+            el("div", { class: "rounded-2xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900" }, [
+              "Could not load history. Double-click START_APP.bat in the project folder.",
+            ])
+          );
+        }
+      }
+
+      async function refreshStatus() {
+        const ok = await refreshMailConnection();
+        if (!ok) {
+          statusEl.textContent =
+            "Mail server offline. Double-click START_APP.bat (opens http://localhost:3001)";
+          statusEl.className = "text-sm text-rose-700";
+          return;
+        }
+        const cfg = mailState.config || {};
+        statusEl.textContent = cfg.hint || "Mail server connected.";
+        statusEl.className = "text-sm text-emerald-800";
+        if (cfg.realEmailEnabled) {
+          gmailStatusEl.textContent = `Sending as ${cfg.smtpUser || "Gmail"} — emails arrive in student Gmail inboxes.`;
+          gmailStatusEl.className = "text-sm text-emerald-800";
+        } else {
+          gmailStatusEl.textContent =
+            "Gmail not connected — students will NOT receive email in Gmail until you add an App Password below.";
+          gmailStatusEl.className = "text-sm text-amber-900";
+        }
+      }
+
+      const connectGmailBtn = el("button", {
+        class:
+          "rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700",
+        type: "button",
+        onClick: async () => {
+          const user = safeTrim(gmailUserInput.value);
+          const pass = gmailPassInput.value;
+          if (!user || !pass) {
+            alert("Enter your Gmail address and App Password.");
+            return;
+          }
+          connectGmailBtn.disabled = true;
+          gmailStatusEl.textContent = "Verifying Gmail login…";
+          try {
+            await saveGmailSmtpConfig(user, pass);
+            gmailPassInput.value = "";
+            await refreshStatus();
+            alert("Gmail connected. Use Send test to verify delivery to the student inbox.");
+          } catch (e) {
+            gmailStatusEl.textContent = e.message || "Setup failed";
+            gmailStatusEl.className = "text-sm text-rose-700";
+            alert(e.message || "Gmail setup failed");
+          } finally {
+            connectGmailBtn.disabled = false;
+          }
+        },
+      }, ["Connect Gmail"]);
+
+      const testGmailBtn = el("button", {
+        class:
+          "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+        type: "button",
+        onClick: async () => {
+          if (!(await refreshMailConnection()) || !isRealGmailEnabled()) {
+            alert("Connect Gmail first (App Password required).");
+            return;
+          }
+          testGmailBtn.disabled = true;
+          try {
+            const r = await sendGmailTest(BMSIT_STUDENT.email);
+            alert(r.hint || `Test sent to ${BMSIT_STUDENT.email}. Check Gmail inbox and Spam.`);
+          } catch (e) {
+            alert(e.message || "Test failed");
+          } finally {
+            testGmailBtn.disabled = false;
+          }
+        },
+      }, [`Test → ${BMSIT_STUDENT.email}`]);
+
+      const sendBtn = el("button", {
+        class:
+          "rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700",
+        type: "button",
+        onClick: async () => {
+          const subject = safeTrim(subjectInput.value);
+          const body = safeTrim(bodyInput.value);
+          if (!subject || !body) {
+            alert("Subject and message body are required.");
+            return;
+          }
+          setFacultySenderName(senderInput.value);
+          let recipients = [];
+          let reminderId = null;
+          if (recipientMode.value === "bmsit") {
+            ensureDemoStudents();
+            recipients = [
+              {
+                email: BMSIT_STUDENT.email,
+                fullName: BMSIT_STUDENT.fullName,
+                usn: BMSIT_STUDENT.usn,
+              },
+            ];
+          } else if (recipientMode.value === "due-reminder") {
+            const due = refreshReminderStatuses(loadReminders()).find(
+              (r) => r.cycle === state.cycle && r.status === "DUE"
+            );
+            if (!due) {
+              alert("No DUE reminders. Generate reminders from Calendar PDF or mark one due for demo.");
+              return;
+            }
+            subjectInput.value = due.title;
+            bodyInput.value = due.body;
+            reminderId = due.id;
+            recipients = studentsAsRecipients(state.cycle);
+          } else {
+            recipients = studentsAsRecipients(state.cycle);
+          }
+          if (!recipients.length) {
+            alert("No student emails. Import students CSV first (Admin → Upload Data).");
+            return;
+          }
+          if (!(await refreshMailConnection()) || !isRealGmailEnabled()) {
+            alert(
+              "Connect Gmail first.\n\n1. Open https://myaccount.google.com/apppasswords\n2. Create App Password for Mail\n3. Paste it in Mail Center → Connect Gmail"
+            );
+            return;
+          }
+          sendStatusEl.textContent = `Sending to ${recipients.length} Gmail inbox(es)…`;
+          sendBtn.disabled = true;
+          try {
+            const result = await sendMailBatch({
+              cycle: state.cycle,
+              subject: recipientMode.value === "due-reminder" ? safeTrim(subjectInput.value) : subject,
+              body: recipientMode.value === "due-reminder" ? safeTrim(bodyInput.value) : body,
+              recipients,
+              senderName: senderInput.value,
+              senderRole: roleLabel,
+              reminderId,
+            });
+            sendStatusEl.textContent = `Sent: ${result.delivered} to Gmail, ${result.failed} failed. Check student Gmail inbox (and Spam).`;
+            if (result.gmailHint) sendStatusEl.textContent += " " + result.gmailHint;
+            if (reminderId) {
+              const all = loadReminders();
+              const next = all.map((x) =>
+                x.id === reminderId ? { ...x, status: "SENT", sentAt: nowIso() } : x
+              );
+              saveReminders(next);
+            }
+            await loadHistory();
+          } catch (e) {
+            sendStatusEl.textContent = "";
+            alert(e.message || "Send failed. Is the mail server running?");
+          } finally {
+            sendBtn.disabled = false;
+          }
+        },
+      }, ["Send email now"]);
+
+      const testConnBtn = el("button", {
+        class:
+          "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+        type: "button",
+        onClick: async () => {
+          setMailApiBase(apiInput.value);
+          await refreshStatus();
+          await loadHistory();
+        },
+      }, ["Test connection"]);
+
+      refreshStatus().then(loadHistory);
+
+      return el("div", { class: "space-y-6" }, [
+        el("div", { class: "rounded-2xl border border-brand-200 bg-brand-50/50 p-4 shadow-sm" }, [
+          sectionTitle(
+            "Connect Gmail (real delivery)",
+            "Emails go to student Gmail inboxes — not only this website.",
+            [connectGmailBtn, testGmailBtn]
+          ),
+          el("div", { class: "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2" }, [
+            el("div", {}, [
+              el("div", { class: "text-sm font-medium text-slate-700" }, ["Teacher Gmail (sender)"]),
+              gmailUserInput,
+              el("div", { class: "mt-1 text-xs text-slate-600" }, [
+                "Use your @gmail.com or @bmsit.in Google account.",
+              ]),
+            ]),
+            el("div", {}, [
+              el("div", { class: "text-sm font-medium text-slate-700" }, ["App Password"]),
+              gmailPassInput,
+              el("div", { class: "mt-1 text-xs text-slate-600" }, [
+                el(
+                  "a",
+                  {
+                    class: "font-medium text-brand-700 hover:underline",
+                    href: "https://myaccount.google.com/apppasswords",
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                  },
+                  ["Create App Password →"]
+                ),
+                " (not your normal login password).",
+              ]),
+            ]),
+          ]),
+          el("div", { class: "mt-3" }, [gmailStatusEl]),
+        ]),
+        el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+          sectionTitle("Mail server", "Local API for sending mail.", [testConnBtn]),
+          el("div", { class: "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2" }, [
+            el("div", {}, [
+              el("div", { class: "text-sm font-medium text-slate-700" }, ["API URL"]),
+              apiInput,
+            ]),
+            el("div", {}, [
+              el("div", { class: "text-sm font-medium text-slate-700" }, ["Sender name"]),
+              senderInput,
+            ]),
+          ]),
+          el("div", { class: "mt-3" }, [statusEl]),
+        ]),
+        el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+          sectionTitle("Compose email", `Send from ${roleLabel} to students in ${cycles[state.cycle] || state.cycle}.`, [sendBtn]),
+          el("div", { class: "mt-3 grid grid-cols-1 gap-3" }, [
+            el("div", {}, [
+              el("div", { class: "text-sm font-medium text-slate-700" }, ["Recipients"]),
+              modeSelect,
+            ]),
+            el("div", {}, [
+              el("div", { class: "text-sm font-medium text-slate-700" }, ["Subject"]),
+              subjectInput,
+            ]),
+            el("div", {}, [
+              el("div", { class: "text-sm font-medium text-slate-700" }, ["Message"]),
+              bodyInput,
+            ]),
+          ]),
+          el("div", { class: "mt-3 text-sm text-slate-600" }, [
+            `Delivered to real Gmail inboxes. Test student: ${BMSIT_STUDENT.email}`,
+          ]),
+          el("div", { class: "mt-2" }, [sendStatusEl]),
+        ]),
+        el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+          el("div", { class: "text-sm font-semibold tracking-tight" }, ["Sent mail log"]),
+          el("div", { class: "mt-3" }, [historyEl]),
+        ]),
+      ]);
+    }
+
+    function normalizeUsn(s) {
+      return String(s || "").trim().toUpperCase();
+    }
+
+    function safeTrim(s) {
+      return String(s || "").trim();
+    }
+
+    function formatDateTime(iso) {
+      try {
+        const d = new Date(iso);
+        return d.toLocaleString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      } catch {
+        return iso;
+      }
+    }
+
+    function speakText(text) {
+      try {
+        if (!text || !text.trim()) {
+          alert("No text to read.");
+          return;
+        }
+        if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+          alert("Text-to-speech is not supported in this browser.");
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 1.0;
+        u.pitch = 1.0;
+        u.volume = 1.0;
+        window.speechSynthesis.speak(u);
+      } catch (e) {
+        alert("Text-to-speech failed in this browser.");
+      }
+    }
+
+    function stopSpeaking() {
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onerror = () => reject(new Error("Failed to read file"));
+        r.onload = () => resolve(String(r.result || ""));
+        r.readAsDataURL(file);
+      });
+    }
+
+    function parseCsv(text) {
+      // Minimal CSV parser: handles commas and quoted fields ("a,b")
+      const rows = [];
+      let i = 0;
+      let field = "";
+      let row = [];
+      let inQuotes = false;
+      while (i < text.length) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            const next = text[i + 1];
+            if (next === '"') {
+              field += '"';
+              i += 2;
+              continue;
+            }
+            inQuotes = false;
+            i += 1;
+            continue;
+          }
+          field += c;
+          i += 1;
+          continue;
+        }
+        if (c === '"') {
+          inQuotes = true;
+          i += 1;
+          continue;
+        }
+        if (c === ",") {
+          row.push(field);
+          field = "";
+          i += 1;
+          continue;
+        }
+        if (c === "\n") {
+          row.push(field);
+          field = "";
+          rows.push(row);
+          row = [];
+          i += 1;
+          continue;
+        }
+        if (c === "\r") {
+          i += 1;
+          continue;
+        }
+        field += c;
+        i += 1;
+      }
+      row.push(field);
+      rows.push(row);
+      // remove trailing empty row if present
+      while (rows.length && rows[rows.length - 1].every((x) => String(x || "").trim() === "")) {
+        rows.pop();
+      }
+      return rows;
+    }
+
+    function downloadTextFile(filename, content) {
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function orientationCard(o, { showAdminActions = false } = {}) {
+      const typeLabel = o.type === "audio" ? "Audio" : "Text";
+      const headerRight = el("div", { class: "flex flex-wrap items-center gap-2" }, [
+        pill(typeLabel, o.type === "audio" ? "info" : "neutral"),
+        pill(cycles[o.cycle] || o.cycle, "neutral"),
+      ]);
+
+      const body = [];
+      if (o.type === "text") {
+        body.push(
+          el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700" }, [
+            (o.text || "").slice(0, 500) + ((o.text || "").length > 500 ? "…" : ""),
+          ])
+        );
+        body.push(
+          el("div", { class: "flex flex-wrap gap-2" }, [
+            el("button", {
+              class:
+                "rounded-xl bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700",
+              type: "button",
+              onClick: () => speakText(o.text || ""),
+            }, ["Listen"]),
+            el("button", {
+              class:
+                "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+              type: "button",
+              onClick: stopSpeaking,
+            }, ["Stop"]),
+          ])
+        );
+      } else {
+        body.push(
+          el("audio", {
+            class: "w-full",
+            controls: "true",
+            src: o.audioDataUrl || "",
+          }, [])
+        );
+        if (o.note) {
+          body.push(el("div", { class: "text-sm text-slate-600" }, [o.note]));
+        }
+      }
+
+      const footer = el("div", { class: "mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500" }, [
+        el("div", {}, [
+          el("span", { class: "font-medium text-slate-700" }, [o.title || "Orientation"]),
+          " · ",
+          `Posted ${formatDateTime(o.createdAt || "")}`,
+          o.postedBy ? ` · By ${o.postedBy}` : "",
+        ]),
+        showAdminActions
+          ? el("button", {
+            class:
+              "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+            type: "button",
+            onClick: () => {
+              const list = loadOrientations();
+              const next = list.filter((x) => x.id !== o.id);
+              saveOrientations(next);
+              render();
+            },
+          }, ["Delete"])
+          : el("span", { class: "hidden" }, [""]),
+      ]);
+
+      return el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+        el("div", { class: "flex items-start justify-between gap-3" }, [
+          el("div", {}, [
+            el("div", { class: "text-sm font-semibold tracking-tight" }, [o.title || "Orientation"]),
+            el("div", { class: "mt-1 text-sm text-slate-600" }, [o.summary || "Orientation message for students."]),
+          ]),
+          headerRight,
+        ]),
+        el("div", { class: "mt-3 space-y-3" }, body),
+        footer,
+      ]);
+    }
+
+    function ensureSeedOrientation() {
+      const list = loadOrientations();
+      if (list.length > 0) return;
+      saveOrientations([
+        {
+          id: "seed-1",
+          cycle: "2025-26-major",
+          type: "text",
+          title: "Major Project Orientation",
+          summary: "Welcome + expectations for Review 0 and allocation rules.",
+          text:
+            "Hello everyone. This is your Major Project orientation. Please form groups of exactly four, choose a clear domain, and submit six unique guide preferences. Review 0 will evaluate your problem statement, approach, and feasibility. Maintain originality—similar titles and copied statements will be flagged. Thank you.",
+          postedBy: "Guide/Coordinator",
+          createdAt: nowIso(),
+        },
+      ]);
+    }
+
+    const BMSIT_STUDENT = {
+      id: "s-bmsit-098",
+      cycle: "2025-26-major",
+      usn: "1BY23CS098",
+      fullName: "Uday K",
+      cgpa: 8.5,
+      phone: "",
+      email: "1by23cs098@bmsit.in",
+    };
+
+    function ensureSeedStudents() {
+      const existing = loadStudents();
+      if (existing.length > 0) return;
+      saveStudents([
+        { ...BMSIT_STUDENT, createdAt: nowIso() },
+        {
+          id: "s-1",
+          cycle: "2025-26-major",
+          usn: "1XY23CS014",
+          fullName: "Nisha P",
+          cgpa: 9.36,
+          phone: "9000000014",
+          email: "nisha@college.edu",
+          createdAt: nowIso(),
+        },
+        {
+          id: "s-2",
+          cycle: "2025-26-major",
+          usn: "1XY23CS033",
+          fullName: "Arjun M",
+          cgpa: 8.12,
+          phone: "9000000033",
+          email: "arjun@college.edu",
+          createdAt: nowIso(),
+        },
+        {
+          id: "s-3",
+          cycle: "2025-26-major",
+          usn: "1XY23CS077",
+          fullName: "Sana K",
+          cgpa: 7.88,
+          phone: "9000000077",
+          email: "sana@college.edu",
+          createdAt: nowIso(),
+        },
+      ]);
+    }
+
+    /** Always merge BMSIT demo student so mail targets work even after prior imports. */
+    function ensureDemoStudents() {
+      ensureSeedStudents();
+      const all = loadStudents();
+      const em = normalizeEmail(BMSIT_STUDENT.email);
+      const has = all.some(
+        (s) => s.cycle === BMSIT_STUDENT.cycle && normalizeEmail(s.email) === em
+      );
+      if (!has) {
+        saveStudents([{ ...BMSIT_STUDENT, createdAt: nowIso() }, ...all]);
+      }
+    }
+
+    function renderAdmin(route) {
+      const pages = {
+        dashboard() {
+          setHeader(
+            state.mode === "present" ? "Admin Overview" : "Admin Dashboard",
+            state.mode === "present"
+              ? "A simple, explainable flow: upload → groups form → allocate → schedule reviews → export."
+              : "Cycle-wide overview with shortcuts for imports, allocation, and scheduling."
+          );
+          return el("div", { class: "space-y-6" }, [
+            el("div", { class: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" }, [
+              card("Students", "240", "uploaded by admin", "info"),
+              card("Groups", "56", "self-formed (4 members)", "neutral"),
+              card("Submitted", "41", "have 6 preferences", "ok"),
+              card("Unallocated", "5", "manual assignment", "warn"),
+            ]),
+
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" }, [
+              sectionTitle(
+                "End-to-end flow (what we’re building)",
+                "This is the story you can explain in 60 seconds.",
+                [button("Upload data", "secondary"), button("Run allocation", "primary")]
+              ),
+              el("ol", { class: "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2" }, [
+                el("li", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4" }, [
+                  el("div", { class: "text-xs font-semibold uppercase tracking-wider text-slate-500" }, ["Step 1"]),
+                  el("div", { class: "mt-1 text-sm font-semibold" }, ["Admin uploads students + faculty"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["Validation catches wrong CGPA, duplicate USN, missing emails."]),
+                ]),
+                el("li", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4" }, [
+                  el("div", { class: "text-xs font-semibold uppercase tracking-wider text-slate-500" }, ["Step 2"]),
+                  el("div", { class: "mt-1 text-sm font-semibold" }, ["Students form groups (exactly 4)"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["Group average CGPA is auto-calculated and locked on submit."]),
+                ]),
+                el("li", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4" }, [
+                  el("div", { class: "text-xs font-semibold uppercase tracking-wider text-slate-500" }, ["Step 3"]),
+                  el("div", { class: "mt-1 text-sm font-semibold" }, ["Allocation engine matches guides"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["Merit-first + 6 preferences + hard cap 2 groups per guide."]),
+                ]),
+                el("li", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4" }, [
+                  el("div", { class: "text-xs font-semibold uppercase tracking-wider text-slate-500" }, ["Step 4"]),
+                  el("div", { class: "mt-1 text-sm font-semibold" }, ["Reviews scheduled + reminders"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["R0 / P1 / P2 with 15-day and 7-day alerts."]),
+                ]),
+              ]),
+            ]),
+
+            detailsBlock(
+              "Allocation snapshot (examples)",
+              "Show only when needed during presentation.",
+              [
+                table(
+                  ["Group", "Avg CGPA", "Matched", "Pref", "Status"],
+                  [
+                    ["CSE6-A-014", "9.12", "Dr. Ananya Rao", "1", pill("Allocated", "ok")],
+                    ["CSE6-A-021", "8.84", "Prof. Kiran S", "2", pill("Allocated", "ok")],
+                    ["CSE6-A-033", "8.41", "—", "—", pill("Unallocated", "warn")],
+                  ]
+                ),
+              ]
+            ),
+          ]);
+        },
+        orientation() {
+          setHeader("Orientation", "Post a text/audio orientation that appears on student dashboards.");
+          ensureSeedOrientation();
+          const list = loadOrientations().filter((o) => o.cycle === state.cycle);
+
+          const titleInput = el("input", {
+            class:
+              "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+            placeholder: "Title (e.g., Major Project Orientation)",
+            value: "Major Project Orientation",
+          });
+          const summaryInput = el("input", {
+            class:
+              "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+            placeholder: "Short summary (what students should know)",
+            value: "Welcome + expectations for Review 0 and allocation rules.",
+          });
+          const postedByInput = el("input", {
+            class:
+              "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+            placeholder: "Posted by (e.g., Dr. ___ / Coordinator)",
+            value: "Coordinator",
+          });
+
+          const typeSelect = el("select", {
+            class:
+              "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+          }, [
+            el("option", { value: "text" }, ["Text (students can Listen)"]),
+            el("option", { value: "audio" }, ["Upload audio (students can Play)"]),
+          ]);
+
+          const textArea = el("textarea", {
+            class:
+              "min-h-[140px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+            placeholder: "Paste the full orientation speech here…",
+          });
+          textArea.value =
+            "Hello everyone. Please form groups of exactly four, choose a clear domain, and submit six unique guide preferences. Review 0 will evaluate your problem statement, approach, and feasibility. Maintain originality—copied ideas will be flagged.";
+
+          const noteInput = el("input", {
+            class:
+              "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+            placeholder: "Optional note for audio (e.g., duration, key points)",
+          });
+
+          const audioInput = el("input", {
+            class:
+              "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+            type: "file",
+            accept: "audio/*",
+          });
+
+          const helper = el("div", { class: "text-xs text-slate-500" }, [
+            "Note: This demo stores data in the browser. Keep audio files small (~2–5MB) to avoid storage limits.",
+          ]);
+
+          const formArea = el("div", { class: "space-y-3" }, []);
+
+          function renderFormForType() {
+            formArea.innerHTML = "";
+            if (typeSelect.value === "text") {
+              formArea.appendChild(el("div", { class: "space-y-2" }, [
+                el("div", { class: "text-sm font-medium text-slate-700" }, ["Orientation text"]),
+                textArea,
+                el("div", { class: "flex flex-wrap gap-2" }, [
+                  el("button", {
+                    class:
+                      "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+                    type: "button",
+                    onClick: () => speakText(textArea.value || ""),
+                  }, ["Preview listen"]),
+                  el("button", {
+                    class:
+                      "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+                    type: "button",
+                    onClick: stopSpeaking,
+                  }, ["Stop"]),
+                ]),
+              ]));
+            } else {
+              formArea.appendChild(el("div", { class: "space-y-2" }, [
+                el("div", { class: "text-sm font-medium text-slate-700" }, ["Upload audio"]),
+                audioInput,
+                noteInput,
+                helper,
+              ]));
+            }
+          }
+
+          typeSelect.addEventListener("change", renderFormForType);
+          renderFormForType();
+
+          const postBtn = el("button", {
+            class:
+              "rounded-xl bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700",
+            type: "button",
+            onClick: async () => {
+              try {
+                ensureSeedOrientation();
+                const base = {
+                  id: "o-" + Math.random().toString(16).slice(2),
+                  cycle: state.cycle,
+                  title: titleInput.value.trim() || "Orientation",
+                  summary: summaryInput.value.trim() || "",
+                  postedBy: postedByInput.value.trim() || "",
+                  createdAt: nowIso(),
+                };
+
+                if (typeSelect.value === "text") {
+                  const text = (textArea.value || "").trim();
+                  if (!text) {
+                    alert("Please paste the orientation text.");
+                    return;
+                  }
+                  const next = [
+                    {
+                      ...base,
+                      type: "text",
+                      text,
+                    },
+                    ...loadOrientations(),
+                  ];
+                  saveOrientations(next);
+                  render();
+                  return;
+                }
+
+                const file = audioInput.files && audioInput.files[0];
+                if (!file) {
+                  alert("Please choose an audio file.");
+                  return;
+                }
+                const dataUrl = await fileToDataUrl(file);
+                const next = [
+                  {
+                    ...base,
+                    type: "audio",
+                    audioDataUrl: dataUrl,
+                    note: noteInput.value.trim() || "",
+                  },
+                  ...loadOrientations(),
+                ];
+                saveOrientations(next);
+                render();
+              } catch (e) {
+                alert("Failed to post orientation. Try again with a smaller audio file or use text mode.");
+              }
+            },
+          }, ["Post orientation"]);
+
+          return el("div", { class: "space-y-6" }, [
+            ...(!storageStatus.ok
+              ? [
+                el(
+                  "div",
+                  {
+                    class:
+                      "rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900",
+                  },
+                  [
+                    el("div", { class: "font-semibold" }, ["Storage warning"]),
+                    el("div", { class: "mt-1 text-amber-800" }, [storageStatus.message]),
+                  ]
+                ),
+              ]
+              : []),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              sectionTitle("Create orientation", "Text-to-speech or audio upload for students", [postBtn]),
+              el("div", { class: "grid grid-cols-1 gap-3 sm:grid-cols-2" }, [
+                el("div", { class: "space-y-2" }, [
+                  el("div", { class: "text-sm font-medium text-slate-700" }, ["Title"]),
+                  titleInput,
+                ]),
+                el("div", { class: "space-y-2" }, [
+                  el("div", { class: "text-sm font-medium text-slate-700" }, ["Posted by"]),
+                  postedByInput,
+                ]),
+              ]),
+              el("div", { class: "mt-3 space-y-2" }, [
+                el("div", { class: "text-sm font-medium text-slate-700" }, ["Summary"]),
+                summaryInput,
+              ]),
+              el("div", { class: "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2" }, [
+                el("div", { class: "space-y-2" }, [
+                  el("div", { class: "text-sm font-medium text-slate-700" }, ["Type"]),
+                  typeSelect,
+                ]),
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700" }, [
+                  el("div", { class: "font-semibold" }, ["Student impact"]),
+                  el("div", { class: "mt-1 text-slate-600" }, ["Shows on Student Dashboard as “Orientation from teacher”."]),
+                ]),
+              ]),
+              el("div", { class: "mt-3" }, [formArea]),
+            ]),
+            el("div", { class: "space-y-3" }, [
+              el("div", { class: "text-sm font-semibold tracking-tight" }, ["Posted orientations (this cycle)"]),
+              ...(list.length
+                ? list.map((o) => orientationCard(o, { showAdminActions: true }))
+                : [
+                  el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" }, [
+                    "No orientations posted yet for this cycle.",
+                  ]),
+                ]),
+            ]),
+          ]);
+        },
+        imports() {
+          setHeader("Data Ingestion (Upload)", "Admin uploads CSV/XLSX/Google Sheets and applies validated imports.");
+          ensureDemoStudents();
+
+          const fileInput = el("input", {
+            type: "file",
+            accept: ".csv,text/csv",
+            class:
+              "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+          });
+
+          const previewArea = el("div", { class: "space-y-3" }, []);
+          let preview = null;
+
+          function renderPreview() {
+            previewArea.innerHTML = "";
+            if (!preview) {
+              previewArea.appendChild(
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" }, [
+                  "Upload a students CSV to see a preview + validation results.",
+                ])
+              );
+              return;
+            }
+
+            const { rows, errors, validRows } = preview;
+            const total = rows.length;
+            const okCount = validRows.length;
+            const errCount = errors.length;
+
+            previewArea.appendChild(
+              el("div", { class: "grid grid-cols-1 gap-3 sm:grid-cols-3" }, [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-white p-3" }, [
+                  el("div", { class: "text-xs text-slate-500" }, ["Total rows"]),
+                  el("div", { class: "mt-1 text-lg font-semibold mono" }, [String(total)]),
+                ]),
+                el("div", { class: "rounded-2xl border border-emerald-200 bg-emerald-50 p-3" }, [
+                  el("div", { class: "text-xs text-emerald-800" }, ["Valid"]),
+                  el("div", { class: "mt-1 text-lg font-semibold mono text-emerald-900" }, [String(okCount)]),
+                ]),
+                el("div", { class: "rounded-2xl border border-rose-200 bg-rose-50 p-3" }, [
+                  el("div", { class: "text-xs text-rose-800" }, ["Errors"]),
+                  el("div", { class: "mt-1 text-lg font-semibold mono text-rose-900" }, [String(errCount)]),
+                ]),
+              ])
+            );
+
+            previewArea.appendChild(
+              detailsBlock("Valid rows preview", "These rows will be imported when you click Apply.", [
+                table(
+                  ["USN", "Name", "CGPA", "Email", "Phone"],
+                  validRows.slice(0, 8).map((r) => [
+                    r.usn,
+                    r.fullName,
+                    String(r.cgpa),
+                    r.email,
+                    r.phone || "—",
+                  ])
+                ),
+              ])
+            );
+
+            if (errors.length) {
+              previewArea.appendChild(
+                detailsBlock("Errors", "Fix these rows in Excel/Sheets and re-upload.", [
+                  table(
+                    ["Row", "USN", "Email", "Issue"],
+                    errors.slice(0, 10).map((e) => [
+                      String(e.rowNumber),
+                      e.usn || "—",
+                      e.email || "—",
+                      e.message,
+                    ])
+                  ),
+                  el("div", { class: "text-xs text-slate-500" }, [
+                    "Only the first 10 errors are shown in this view.",
+                  ]),
+                ])
+              );
+            }
+          }
+
+          async function parseStudentsCsv(file) {
+            const text = await file.text();
+            const parsed = parseCsv(text);
+            if (parsed.length < 2) {
+              return { rows: [], validRows: [], errors: [{ rowNumber: 1, message: "CSV is empty." }] };
+            }
+            const headers = parsed[0].map((h) => safeTrim(h).toLowerCase());
+            const idx = {
+              usn: headers.indexOf("usn"),
+              name: headers.indexOf("name"),
+              fullName: headers.indexOf("full_name"),
+              cgpa: headers.indexOf("cgpa"),
+              phone: headers.indexOf("phone"),
+              email: headers.indexOf("email"),
+            };
+
+            const getNameIdx = idx.name !== -1 ? idx.name : idx.fullName;
+            const missing = [];
+            if (idx.usn === -1) missing.push("usn");
+            if (getNameIdx === -1) missing.push("name (or full_name)");
+            if (idx.cgpa === -1) missing.push("cgpa");
+            if (idx.email === -1) missing.push("email");
+            if (missing.length) {
+              return {
+                rows: [],
+                validRows: [],
+                errors: [{ rowNumber: 1, message: `Missing required columns: ${missing.join(", ")}` }],
+              };
+            }
+
+            const existing = loadStudents().filter((s) => s.cycle === state.cycle);
+            const existingUsn = new Set(existing.map((s) => normalizeUsn(s.usn)));
+            const existingEmail = new Set(existing.map((s) => normalizeEmail(s.email)));
+
+            const seenUsn = new Set();
+            const seenEmail = new Set();
+            const rows = [];
+            const validRows = [];
+            const errors = [];
+
+            for (let r = 1; r < parsed.length; r++) {
+              const cols = parsed[r];
+              const rowNumber = r + 1;
+              const usn = normalizeUsn(cols[idx.usn] ?? "");
+              const fullName = safeTrim(cols[getNameIdx] ?? "");
+              const cgpaRaw = safeTrim(cols[idx.cgpa] ?? "");
+              const email = normalizeEmail(cols[idx.email] ?? "");
+              const phone = idx.phone !== -1 ? safeTrim(cols[idx.phone] ?? "") : "";
+
+              const base = { rowNumber, usn, fullName, cgpaRaw, email, phone };
+              rows.push(base);
+
+              if (!usn) {
+                errors.push({ rowNumber, usn, email, message: "USN is required." });
+                continue;
+              }
+              if (!fullName) {
+                errors.push({ rowNumber, usn, email, message: "Name is required." });
+                continue;
+              }
+              const cgpa = Number(cgpaRaw);
+              if (!Number.isFinite(cgpa) || cgpa < 0 || cgpa > 10) {
+                errors.push({ rowNumber, usn, email, message: "CGPA must be a number between 0 and 10." });
+                continue;
+              }
+              if (!email || !email.includes("@")) {
+                errors.push({ rowNumber, usn, email, message: "Valid email is required." });
+                continue;
+              }
+              if (existingUsn.has(usn) || seenUsn.has(usn)) {
+                errors.push({ rowNumber, usn, email, message: "Duplicate USN." });
+                continue;
+              }
+              if (existingEmail.has(email) || seenEmail.has(email)) {
+                errors.push({ rowNumber, usn, email, message: "Duplicate email." });
+                continue;
+              }
+
+              seenUsn.add(usn);
+              seenEmail.add(email);
+              validRows.push({
+                id: "s-" + Math.random().toString(16).slice(2),
+                cycle: state.cycle,
+                usn,
+                fullName,
+                cgpa: Math.round(cgpa * 100) / 100,
+                phone,
+                email,
+                createdAt: nowIso(),
+              });
+            }
+
+            return { rows, validRows, errors };
+          }
+
+          const applyBtn = el("button", {
+            class:
+              "rounded-xl bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700 disabled:opacity-50",
+            type: "button",
+            disabled: true,
+            onClick: () => {
+              if (!preview) return;
+              const toImport = preview.validRows || [];
+              const students = loadStudents();
+              const nextStudents = [...toImport, ...students];
+              saveStudents(nextStudents);
+
+              const batches = loadImportBatches();
+              const batch = {
+                id: "b-" + Math.random().toString(16).slice(2),
+                cycle: state.cycle,
+                entity: "STUDENTS",
+                source: "CSV",
+                createdAt: nowIso(),
+                totalRows: preview.rows.length,
+                successRows: toImport.length,
+                failedRows: preview.errors.length,
+              };
+              saveImportBatches([batch, ...batches]);
+              preview = null;
+              fileInput.value = "";
+              applyBtn.disabled = true;
+              renderPreview();
+              alert("Import applied. Go to Admin → Students to view.");
+            },
+          }, ["Apply import"]);
+
+          fileInput.addEventListener("change", async () => {
+            const file = fileInput.files && fileInput.files[0];
+            if (!file) return;
+            if (!file.name.toLowerCase().endsWith(".csv")) {
+              alert("Please upload a .csv file.");
+              fileInput.value = "";
+              return;
+            }
+            try {
+              preview = await parseStudentsCsv(file);
+              applyBtn.disabled = !(preview.validRows && preview.validRows.length);
+              renderPreview();
+            } catch {
+              alert("Could not parse the CSV. Please check the format and try again.");
+            }
+          });
+
+          const sampleBtn = el("button", {
+            class:
+              "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+            type: "button",
+            onClick: () => {
+              const sample =
+                "usn,name,cgpa,phone,email\n" +
+                "1XY23CS101,Rahul V,8.76,9000000101,rahul@college.edu\n" +
+                "1XY23CS102,Meera S,9.04,9000000102,meera@college.edu\n" +
+                "1XY23CS103,Sahil T,8.90,9000000103,sahil@college.edu\n";
+              downloadTextFile("students-sample.csv", sample);
+            },
+          }, ["Download sample CSV"]);
+
+          const batches = loadImportBatches().filter((b) => b.cycle === state.cycle && b.entity === "STUDENTS");
+          const latest = batches[0];
+
+          const latestCard = latest
+            ? el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold" }, ["Latest student import (this cycle)"]),
+              el("div", { class: "mt-2 grid grid-cols-3 gap-3" }, [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-xs text-slate-500" }, ["Total rows"]),
+                  el("div", { class: "mt-1 text-lg font-semibold mono" }, [String(latest.totalRows)]),
+                ]),
+                el("div", { class: "rounded-2xl border border-emerald-200 bg-emerald-50 p-3" }, [
+                  el("div", { class: "text-xs text-emerald-800" }, ["Imported"]),
+                  el("div", { class: "mt-1 text-lg font-semibold mono text-emerald-900" }, [String(latest.successRows)]),
+                ]),
+                el("div", { class: "rounded-2xl border border-rose-200 bg-rose-50 p-3" }, [
+                  el("div", { class: "text-xs text-rose-800" }, ["Errors"]),
+                  el("div", { class: "mt-1 text-lg font-semibold mono text-rose-900" }, [String(latest.failedRows)]),
+                ]),
+              ]),
+              el("div", { class: "mt-2 text-xs text-slate-500" }, [`Applied ${formatDateTime(latest.createdAt)}`]),
+            ])
+            : el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" }, [
+              "No imports applied yet for this cycle.",
+            ]);
+
+          renderPreview();
+
+          return el("div", { class: "space-y-6" }, [
+            ...(!storageStatus.ok
+              ? [
+                el(
+                  "div",
+                  {
+                    class:
+                      "rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900",
+                  },
+                  [
+                    el("div", { class: "font-semibold" }, ["Storage warning"]),
+                    el("div", { class: "mt-1 text-amber-800" }, [storageStatus.message]),
+                  ]
+                ),
+              ]
+              : []),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              sectionTitle(
+                "Upload students (CSV)",
+                "Required columns: usn, name (or full_name), cgpa, email. Optional: phone.",
+                [sampleBtn, applyBtn]
+              ),
+              el("div", { class: "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2" }, [
+                el("div", { class: "space-y-2" }, [
+                  el("div", { class: "text-sm font-medium text-slate-700" }, ["Choose CSV file"]),
+                  fileInput,
+                  el("div", { class: "text-xs text-slate-500" }, [
+                    "Tip: Export from Excel/Google Sheets as CSV.",
+                  ]),
+                ]),
+                el("div", {}, [latestCard]),
+              ]),
+            ]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold tracking-tight" }, ["Preview & validation"]),
+              el("div", { class: "mt-3" }, [previewArea]),
+            ]),
+          ]);
+        },
+        calendar() {
+          setHeader(
+            "Calendar PDF → Review reminders",
+            "Upload a PDF calendar, extract text in-browser, detect likely review dates, and generate 7-day reminders for students."
+          );
+          ensureDemoStudents();
+
+          const pdfInput = el("input", {
+            type: "file",
+            accept: "application/pdf",
+            class:
+              "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+          });
+
+          const pasteArea = el("textarea", {
+            class:
+              "min-h-[120px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+            placeholder:
+              "Optional fallback: paste calendar text here if the PDF has no extractable text (scanned PDFs).",
+          });
+
+          const statusBox = el("div", { class: "text-sm text-slate-600" }, [
+            "Choose a PDF, click Scan, then Generate reminders.",
+          ]);
+
+          const eventsArea = el("div", { class: "space-y-3" }, []);
+          const remindersArea = el("div", { class: "space-y-3" }, []);
+
+          let lastExtractedText = "";
+          let lastImportId = "";
+
+          function renderEvents() {
+            eventsArea.innerHTML = "";
+            const events = loadCalendarEvents().filter((e) => e.cycle === state.cycle);
+            if (!events.length) {
+              eventsArea.appendChild(
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" }, [
+                  "No detected review events yet for this cycle.",
+                ])
+              );
+              return;
+            }
+            eventsArea.appendChild(
+              table(
+                ["Date", "Phase", "Title", "Confidence", "Source snippet", "Remove"],
+                events.slice(0, 50).map((ev) => [
+                  ev.eventDate,
+                  ev.phase,
+                  ev.title,
+                  pill(String(ev.confidence || "medium"), ev.confidence === "high" ? "ok" : "neutral"),
+                  (ev.sourceLine || "").slice(0, 90) + ((ev.sourceLine || "").length > 90 ? "…" : ""),
+                  el("button", {
+                    class:
+                      "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+                    type: "button",
+                    onClick: () => {
+                      const all = loadCalendarEvents();
+                      const next = all.filter((x) => x.id !== ev.id);
+                      saveCalendarEvents(next);
+                      // also remove reminders tied to this event
+                      const rs = loadReminders().filter((r) => r.eventId !== ev.id);
+                      saveReminders(rs);
+                      renderEvents();
+                      renderReminders();
+                    },
+                  }, ["Remove"]),
+                ])
+              )
+            );
+          }
+
+          function renderReminders() {
+            remindersArea.innerHTML = "";
+            const rs = refreshReminderStatuses(loadReminders()).filter((r) => r.cycle === state.cycle);
+            if (!rs.length) {
+              remindersArea.appendChild(
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" }, [
+                  "No reminders generated yet.",
+                ])
+              );
+              return;
+            }
+
+            remindersArea.appendChild(
+              table(
+                ["Reminder time", "Event", "Event date", "Status", "Mark sent"],
+                rs.slice(0, 50).map((r) => [
+                  formatDateTime(r.dueAt),
+                  r.title,
+                  r.eventDate,
+                  pill(r.status, r.status === "DUE" ? "warn" : r.status === "SENT" ? "ok" : "neutral"),
+                  el("button", {
+                    class:
+                      "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+                    type: "button",
+                    onClick: () => {
+                      const all = loadReminders();
+                      const next = all.map((x) => (x.id === r.id ? { ...x, status: "SENT", sentAt: nowIso() } : x));
+                      saveReminders(next);
+                      renderReminders();
+                    },
+                  }, ["Mark sent"]),
+                ])
+              )
+            );
+          }
+
+          const scanBtn = el("button", {
+            class:
+              "rounded-xl bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700",
+            type: "button",
+            onClick: async () => {
+              try {
+                statusBox.textContent = "Scanning…";
+                let text = "";
+                const file = pdfInput.files && pdfInput.files[0];
+                if (file) {
+                  text = await extractPdfText(file);
+                }
+                if (!text && pasteArea.value.trim()) {
+                  text = pasteArea.value.trim();
+                }
+                if (!text) {
+                  statusBox.textContent = "No text found. Try pasting calendar text, or use a text-based PDF.";
+                  alert("Could not extract text from the PDF. Paste the calendar text manually.");
+                  return;
+                }
+
+                lastExtractedText = text;
+                lastImportId = "ci-" + Math.random().toString(16).slice(2);
+                const events = extractReviewEventsFromText(text).map((e) => ({ ...e, cycle: state.cycle, importId: lastImportId }));
+
+                // replace events for this cycle from this import only (simple model)
+                const kept = loadCalendarEvents().filter((e) => e.cycle !== state.cycle);
+                saveCalendarEvents([...events, ...kept]);
+
+                const imports = loadCalendarImports();
+                saveCalendarImports([
+                  {
+                    id: lastImportId,
+                    cycle: state.cycle,
+                    filename: file ? file.name : "(pasted text)",
+                    createdAt: nowIso(),
+                    extractedChars: text.length,
+                    detectedEvents: events.length,
+                  },
+                  ...imports,
+                ]);
+
+                statusBox.textContent = `Detected ${events.length} likely review event(s).`;
+                renderEvents();
+                renderReminders();
+              } catch (e) {
+                statusBox.textContent = "Scan failed.";
+                alert("PDF scan failed. If this is a scanned PDF, paste the text manually.");
+              }
+            },
+          }, ["Scan PDF / text"]);
+
+          const genBtn = el("button", {
+            class:
+              "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+            type: "button",
+            onClick: () => {
+              const events = loadCalendarEvents().filter((e) => e.cycle === state.cycle);
+              if (!events.length) {
+                alert("No events detected yet. Scan a PDF or paste text first.");
+                return;
+              }
+
+              const existing = loadReminders();
+              const without = existing.filter((r) => !(r.cycle === state.cycle && r.kind === "REVIEW_WEEK_BEFORE"));
+              const created = events.map((ev) => {
+                const dueAt = weekBeforeAt9amLocalIso(ev.eventDate);
+                const subject = `Reminder: ${ev.title} on ${ev.eventDate}`;
+                const body =
+                  `This is a reminder that your major project review is scheduled.\n\n` +
+                  `Event: ${ev.title}\n` +
+                  `Phase: ${ev.phase}\n` +
+                  `Date: ${ev.eventDate}\n\n` +
+                  `Source snippet:\n${ev.sourceLine || ""}\n`;
+                return {
+                  id: "rm-" + Math.random().toString(16).slice(2),
+                  cycle: state.cycle,
+                  kind: "REVIEW_WEEK_BEFORE",
+                  eventId: ev.id,
+                  title: subject,
+                  body,
+                  eventDate: ev.eventDate,
+                  dueAt,
+                  status: "QUEUED",
+                  createdAt: nowIso(),
+                };
+              });
+
+              saveReminders([...created, ...without]);
+              statusBox.textContent = `Generated ${created.length} reminder(s) (7 days before each event at 9:00 AM).`;
+              renderReminders();
+            },
+          }, ["Generate reminders (7 days before)"]);
+
+          const mailBtn = el("button", {
+            class:
+              "rounded-xl bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700",
+            type: "button",
+            onClick: async () => {
+              const rs = refreshReminderStatuses(loadReminders()).filter((r) => r.cycle === state.cycle && r.status === "DUE");
+              if (!rs.length) {
+                alert("No DUE reminders yet. Either wait until reminder time, or temporarily change your PC clock for demo.");
+                return;
+              }
+              const r = rs[0];
+              const recipients = studentsAsRecipients(state.cycle);
+              if (!recipients.length) {
+                alert("No student emails found. Import students CSV first (Admin → Upload Data).");
+                return;
+              }
+              if (!(await refreshMailConnection())) {
+                alert("Mail server offline. Double-click START_APP.bat in the project folder.");
+                setRoute("mail-service");
+                return;
+              }
+              if (!isRealGmailEnabled()) {
+                alert("Connect Gmail in Mail Center first (App Password) to send to student Gmail inboxes.");
+                setRoute("mail-service");
+                return;
+              }
+              mailBtn.disabled = true;
+              mailBtn.textContent = "Sending…";
+              try {
+                const result = await sendMailBatch({
+                  cycle: state.cycle,
+                  subject: r.title,
+                  body: r.body,
+                  recipients,
+                  senderName: getFacultySenderName(),
+                  senderRole: "admin",
+                  reminderId: r.id,
+                });
+                const all = loadReminders();
+                saveReminders(all.map((x) => (x.id === r.id ? { ...x, status: "SENT", sentAt: nowIso() } : x)));
+                statusBox.textContent = `Gmail sent: ${result.delivered} delivered, ${result.failed} failed. Check student Gmail inbox and Spam.`;
+                renderReminders();
+              } catch (e) {
+                alert(e.message || "Send failed");
+              } finally {
+                mailBtn.disabled = false;
+                mailBtn.textContent = "Send email to students (DUE reminders)";
+              }
+            },
+          }, ["Send email to students (DUE reminders)"]);
+
+          const clearBtn = el("button", {
+            class:
+              "rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-800 shadow-sm hover:bg-rose-100",
+            type: "button",
+            onClick: () => {
+              if (!confirm("Clear calendar events + reminders for this cycle?")) return;
+              saveCalendarEvents(loadCalendarEvents().filter((e) => e.cycle !== state.cycle));
+              saveReminders(loadReminders().filter((r) => r.cycle !== state.cycle));
+              saveCalendarImports(loadCalendarImports().filter((i) => i.cycle !== state.cycle));
+              lastExtractedText = "";
+              lastImportId = "";
+              pdfInput.value = "";
+              pasteArea.value = "";
+              statusBox.textContent = "Cleared for this cycle.";
+              renderEvents();
+              renderReminders();
+            },
+          }, ["Clear cycle data"]);
+
+          renderEvents();
+          renderReminders();
+
+          const latest = loadCalendarImports().filter((i) => i.cycle === state.cycle)[0];
+
+          return el("div", { class: "space-y-6" }, [
+            ...(!storageStatus.ok
+              ? [
+                el(
+                  "div",
+                  {
+                    class:
+                      "rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900",
+                  },
+                  [
+                    el("div", { class: "font-semibold" }, ["Storage warning"]),
+                    el("div", { class: "mt-1 text-amber-800" }, [storageStatus.message]),
+                  ]
+                ),
+              ]
+              : []),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              sectionTitle(
+                "Upload calendar PDF",
+                "Works best with text-based PDFs. Scanned PDFs may need manual paste.",
+                [scanBtn, genBtn, mailBtn, clearBtn]
+              ),
+              el("div", { class: "mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2" }, [
+                el("div", { class: "space-y-2" }, [
+                  el("div", { class: "text-sm font-medium text-slate-700" }, ["PDF file"]),
+                  pdfInput,
+                  statusBox,
+                ]),
+                el("div", { class: "space-y-2" }, [
+                  el("div", { class: "text-sm font-medium text-slate-700" }, ["Fallback: paste text"]),
+                  pasteArea,
+                ]),
+              ]),
+              el("div", { class: "mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700" }, [
+                el("div", { class: "font-semibold" }, ["What students will see"]),
+                el("div", { class: "mt-1 text-slate-600" }, [
+                  "Reminders appear on the Student Dashboard. Use Send email (SMTP + real-time notifications) or Mail Center for custom messages.",
+                ]),
+              ]),
+            ]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold tracking-tight" }, ["Latest scan (this cycle)"]),
+              latest
+                ? el("div", { class: "mt-2 text-sm text-slate-700" }, [
+                  `${latest.filename} · ${latest.detectedEvents} event(s) · ${latest.extractedChars} chars · ${formatDateTime(latest.createdAt)}`,
+                ])
+                : el("div", { class: "mt-2 text-sm text-slate-600" }, ["No scans yet."]),
+            ]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold tracking-tight" }, ["Detected review events"]),
+              el("div", { class: "mt-3" }, [eventsArea]),
+            ]),
+            detailsBlock(
+              "Extracted text preview",
+              "Useful for debugging detection. Large PDFs are truncated here.",
+              [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700 whitespace-pre-wrap" }, [
+                  (lastExtractedText || "(scan a PDF to populate)").slice(0, 4000) +
+                  ((lastExtractedText || "").length > 4000 ? "…" : ""),
+                ]),
+              ]
+            ),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold tracking-tight" }, ["Generated reminders"]),
+              el("div", { class: "mt-3" }, [remindersArea]),
+            ]),
+          ]);
+        },
+        "mail-service"() {
+          setHeader("Mail Center", "Send SMTP email to students and deliver real-time in-app notifications.");
+          return renderMailCenter(state.role === "admin" ? "Admin" : "Faculty");
+        },
+        students() {
+          setHeader("Students", "Search, filter, and see group membership and CGPA.");
+          ensureDemoStudents();
+          const students = loadStudents().filter((s) => s.cycle === state.cycle);
+          const sorted = [...students].sort((a, b) => (b.cgpa || 0) - (a.cgpa || 0));
+          const clearBtn = el("button", {
+            class:
+              "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+            type: "button",
+            onClick: () => {
+              const all = loadStudents();
+              const next = all.filter((s) => s.cycle !== state.cycle);
+              saveStudents(next);
+              render();
+            },
+          }, ["Clear students (this cycle)"]);
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Student directory", "Uploaded students for the selected cycle (CSV import).", [clearBtn]),
+            table(
+              ["USN", "Name", "CGPA", "Email", "Phone"],
+              sorted.slice(0, 200).map((s) => [
+                s.usn,
+                s.fullName,
+                String(s.cgpa),
+                s.email,
+                s.phone || "—",
+              ])
+            ),
+          ]);
+        },
+        faculty() {
+          setHeader("Faculty", "Capacity (max 2 groups/guide) and domain mapping.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Faculty directory", "Capacity indicators shown per cycle", [button("Upload faculty list", "secondary")]),
+            table(
+              ["Name", "Designation", "Domains", "Capacity", "Assigned", "Load"],
+              [
+                ["Dr. Ananya Rao", "Associate Professor", "AI/ML", "2", "2", pill("Full", "warn")],
+                ["Prof. Kiran S", "Professor", "Web", "2", "1", pill("Available", "ok")],
+                ["Ms. Deepa N", "Assistant Professor", "IoT", "2", "0", pill("Available", "ok")],
+              ]
+            ),
+          ]);
+        },
+        groups() {
+          setHeader("Groups", "Self-formed student groups (exactly 4 members) with locked average CGPA.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Groups overview", "See which groups are ready, submitted, allocated, or unallocated."),
+            table(
+              ["Group", "Members", "Avg CGPA", "Domain", "Preferences", "Status"],
+              [
+                ["CSE6-A-014", "4/4", "9.12", "AI/ML", "6/6", pill("Submitted", "ok")],
+                ["CSE6-A-021", "4/4", "8.84", "Web", "6/6", pill("Allocated", "ok")],
+                ["CSE6-A-033", "4/4", "8.41", "IoT", "6/6", pill("Unallocated", "warn")],
+                ["CSE6-A-052", "3/4", "—", "—", "0/6", pill("Draft", "neutral")],
+              ]
+            ),
+          ]);
+        },
+        allocation() {
+          setHeader("Allocation", "Merit-first allocation with 6 preferences and a manual fallback queue.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle(
+              "Allocation control center",
+              "In build: runs inside a transaction with locks to enforce max 2 groups per guide.",
+              [button("Run allocation", "primary"), button("View run history", "secondary")]
+            ),
+            el("div", { class: "grid grid-cols-1 gap-4 lg:grid-cols-2" }, [
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                el("div", { class: "text-sm font-semibold" }, ["How it matches (visual)"]),
+                el("div", { class: "mt-3 space-y-2 text-sm text-slate-700" }, [
+                  el("div", { class: "flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                    el("div", {}, [
+                      el("div", { class: "font-semibold" }, ["Group CSE6-A-014"]),
+                      el("div", { class: "text-slate-600" }, ["Avg CGPA 9.12 · Pref #1 Dr. Ananya Rao"]),
+                    ]),
+                    pill("Allocated", "ok"),
+                  ]),
+                  el("div", { class: "flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                    el("div", {}, [
+                      el("div", { class: "font-semibold" }, ["Group CSE6-A-033"]),
+                      el("div", { class: "text-slate-600" }, ["Avg CGPA 8.41 · Pref #1 full → … → Pref #6 full"]),
+                    ]),
+                    pill("Unallocated", "warn"),
+                  ]),
+                ]),
+              ]),
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                el("div", { class: "text-sm font-semibold" }, ["Unallocated queue (manual assignment)"]),
+                el("div", { class: "mt-3 overflow-hidden rounded-2xl border border-slate-200" }, [
+                  el("div", { class: "divide-y divide-slate-100" }, [
+                    el("div", { class: "flex items-start justify-between gap-3 p-3" }, [
+                      el("div", {}, [
+                        el("div", { class: "text-sm font-semibold" }, ["CSE6-A-033 · IoT"]),
+                        el("div", { class: "mt-1 text-sm text-slate-600" }, ["All preferred guides full."]),
+                      ]),
+                      button("Assign manually", "secondary"),
+                    ]),
+                    el("div", { class: "flex items-start justify-between gap-3 p-3" }, [
+                      el("div", {}, [
+                        el("div", { class: "text-sm font-semibold" }, ["CSE6-A-047 · Web"]),
+                        el("div", { class: "mt-1 text-sm text-slate-600" }, ["Invalid preference list (duplicate guide)."]),
+                      ]),
+                      button("Fix prefs", "secondary"),
+                    ]),
+                  ]),
+                ]),
+              ]),
+            ]),
+          ]);
+        },
+        reviews() {
+          setHeader("Reviews & Scheduling", "Schedule Review 0, P1, P2 with venue/time and reminder jobs.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle(
+              "Scheduling",
+              "In build: schedule sessions and auto-queue reminders (15 days & 7 days).",
+              [button("Schedule Review 0", "primary"), button("View reminder queue", "secondary")]
+            ),
+            table(
+              ["Group", "Phase", "Scheduled At", "Venue", "Reminders", "Status"],
+              [
+                ["CSE6-A-014", "R0", "2026-04-20 10:30", "Seminar Hall 2", "15d + 7d queued", pill("Scheduled", "ok")],
+                ["CSE6-A-021", "R0", "2026-04-20 11:10", "Lab 3", "15d + 7d queued", pill("Scheduled", "ok")],
+                ["CSE6-A-033", "R0", "—", "—", "—", pill("Not scheduled", "warn")],
+              ]
+            ),
+          ]);
+        },
+        attendance() {
+          setHeader("Attendance & Evaluation", "Faculty marks attendance and evaluations; admin can export.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Review session", "Batch-wise attendance and score entry", [button("Export Excel", "secondary")]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "flex flex-wrap items-center justify-between gap-3" }, [
+                el("div", {}, [
+                  el("div", { class: "text-sm font-semibold" }, ["R0 · 2026-04-20 10:30 · Seminar Hall 2"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["Group: CSE6-A-014 · Guide: Dr. Ananya Rao"]),
+                ]),
+                pill("Open", "info"),
+              ]),
+              el("div", { class: "mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2" }, [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-sm font-semibold" }, ["Attendance (4 students)"]),
+                  el("div", { class: "mt-2 space-y-2 text-sm" }, [
+                    el("div", { class: "flex items-center justify-between" }, ["Nisha P", pill("Present", "ok")]),
+                    el("div", { class: "flex items-center justify-between" }, ["Karthik R", pill("Present", "ok")]),
+                    el("div", { class: "flex items-center justify-between" }, ["Sahil T", pill("Absent", "bad")]),
+                    el("div", { class: "flex items-center justify-between" }, ["Meera S", pill("Present", "ok")]),
+                  ]),
+                ]),
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-sm font-semibold" }, ["Evaluation"]),
+                  el("div", { class: "mt-2 grid grid-cols-2 gap-2" }, [
+                    el("div", { class: "rounded-2xl border border-slate-200 bg-white p-3" }, [
+                      el("div", { class: "text-xs text-slate-500" }, ["Score"]),
+                      el("div", { class: "mt-1 text-lg font-semibold mono" }, ["7.5 / 10"]),
+                    ]),
+                    el("div", { class: "rounded-2xl border border-slate-200 bg-white p-3" }, [
+                      el("div", { class: "text-xs text-slate-500" }, ["Remarks"]),
+                      el("div", { class: "mt-1 text-sm text-slate-700" }, ["Good scope, refine dataset plan."]),
+                    ]),
+                  ]),
+                ]),
+              ]),
+            ]),
+          ]);
+        },
+        titles() {
+          setHeader("Title Registry & Duplication", "Central title log + similarity checks for problem statements.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Title registry", "Search and detect duplicates before approval"),
+            table(
+              ["Final Title", "Group", "Domain", "Guide", "Cycle"],
+              [
+                ["Smart Attendance via Face Recognition", "CSE6-A-021", "AI/ML", "Dr. Ananya Rao", cycles[state.cycle]],
+                ["IoT-Based Energy Monitoring Dashboard", "CSE6-A-033", "IoT", "Ms. Deepa N", cycles[state.cycle]],
+                ["Adaptive Study Planner using ML", "CSE6-A-014", "AI/ML", "Dr. Ananya Rao", cycles[state.cycle]],
+              ]
+            ),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold" }, ["Duplication check (prototype)"]),
+              el("div", { class: "mt-1 text-sm text-slate-600" }, ["In build: use text similarity (e.g., pg_trgm) to suggest potential copies."]),
+              el("div", { class: "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2" }, [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-xs text-slate-500" }, ["Proposed statement"]),
+                  el("div", { class: "mt-1 text-sm text-slate-800" }, [
+                    "“Build a face recognition attendance system with anti-spoofing and reports.”",
+                  ]),
+                ]),
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-xs text-slate-500" }, ["Potential matches"]),
+                  el("div", { class: "mt-2 space-y-2" }, [
+                    el("div", { class: "flex items-center justify-between rounded-xl border border-slate-200 bg-white p-2 text-sm" }, [
+                      el("div", {}, [el("div", { class: "font-medium" }, ["Smart Attendance via Face Recognition"]), el("div", { class: "text-xs text-slate-500" }, ["Similarity: 0.82"])]),
+                      pill("High", "warn"),
+                    ]),
+                    el("div", { class: "flex items-center justify-between rounded-xl border border-slate-200 bg-white p-2 text-sm" }, [
+                      el("div", {}, [el("div", { class: "font-medium" }, ["Campus Security using Face ID"]), el("div", { class: "text-xs text-slate-500" }, ["Similarity: 0.61"])]),
+                      pill("Medium", "neutral"),
+                    ]),
+                  ]),
+                ]),
+              ]),
+            ]),
+          ]);
+        },
+        reports() {
+          setHeader("Reports & Exports", "One place to export cycle-wise allocation, attendance, and faculty load.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Export center", "Download ready-made sheets for department reporting", [
+              button("Export allocation report", "primary"),
+              button("Export attendance report", "secondary"),
+            ]),
+            el("div", { class: "grid grid-cols-1 gap-4 sm:grid-cols-2" }, [
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                el("div", { class: "text-sm font-semibold" }, ["Allocation report"]),
+                el("div", { class: "mt-1 text-sm text-slate-600" }, ["Group → guide, matched preference, unallocated queue."]),
+                el("div", { class: "mt-4 h-10 rounded-xl skeleton" }, []),
+              ]),
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                el("div", { class: "text-sm font-semibold" }, ["Faculty load"]),
+                el("div", { class: "mt-1 text-sm text-slate-600" }, ["Capacity and assigned groups per domain."]),
+                el("div", { class: "mt-4 h-10 rounded-xl skeleton" }, []),
+              ]),
+            ]),
+          ]);
+        },
+        settings() {
+          setHeader("Settings", "Configure domains, capacity defaults, and cycle windows.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Configuration", "These will map to admin-controlled master data in DB."),
+            el("div", { class: "grid grid-cols-1 gap-4 sm:grid-cols-2" }, [
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                el("div", { class: "text-sm font-semibold" }, ["Domains"]),
+                el("div", { class: "mt-2 flex flex-wrap gap-2" }, [
+                  pill("AI/ML", "info"),
+                  pill("Web", "info"),
+                  pill("IoT", "info"),
+                  pill("Cybersecurity", "info"),
+                ]),
+                el("div", { class: "mt-3" }, [button("Manage domains", "secondary")]),
+              ]),
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                el("div", { class: "text-sm font-semibold" }, ["Capacity defaults"]),
+                el("div", { class: "mt-2 text-sm text-slate-600" }, ["Default max groups per guide: 2 (hard cap)."]),
+                el("div", { class: "mt-3" }, [button("Edit capacity rules", "secondary")]),
+              ]),
+            ]),
+          ]);
+        },
+      };
+      return (pages[route] || pages.dashboard)();
+    }
+
+    function getStudentRemindersForCycle(cycle) {
+      const rs = refreshReminderStatuses(loadReminders()).filter(
+        (r) => r.cycle === cycle && r.kind === "REVIEW_WEEK_BEFORE"
+      );
+      const rank = (s) => (s === "DUE" ? 0 : s === "QUEUED" ? 1 : 2);
+      return rs.sort((a, b) => {
+        const dr = rank(a.status) - rank(b.status);
+        if (dr !== 0) return dr;
+        return new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime();
+      });
+    }
+
+    function studentReminderCard(r) {
+      return el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+        el("div", { class: "flex flex-wrap items-start justify-between gap-2" }, [
+          el("div", {}, [
+            el("div", { class: "text-sm font-semibold text-slate-900" }, [r.title]),
+            el("div", { class: "mt-1 text-xs text-slate-600" }, [
+              `Reminder time: ${formatDateTime(r.dueAt)} · Event date: ${r.eventDate}`,
+            ]),
+          ]),
+          pill(r.status, r.status === "DUE" ? "warn" : r.status === "SENT" ? "ok" : "neutral"),
+        ]),
+        el("div", { class: "mt-2 text-sm text-slate-700 whitespace-pre-wrap" }, [(r.body || "").slice(0, 600)]),
+      ]);
+    }
+
+    function renderStudent(route) {
+      const pages = {
+        dashboard() {
+          setHeader("Student Dashboard", "See your group status, upcoming reviews, and actions.");
+          ensureSeedOrientation();
+          const orientations = loadOrientations()
+            .filter((o) => o.cycle === state.cycle)
+            .slice(0, 2);
+          const reminders = getStudentRemindersForCycle(state.cycle).slice(0, 4);
+          const mailNotes = getLocalNotificationsForStudent(getStudentViewerEmail(), state.cycle).slice(0, 3);
+          return el("div", { class: "space-y-6" }, [
+            ...(!storageStatus.ok
+              ? [
+                el(
+                  "div",
+                  {
+                    class:
+                      "rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900",
+                  },
+                  [
+                    el("div", { class: "font-semibold" }, ["Storage warning"]),
+                    el("div", { class: "mt-1 text-amber-800" }, [storageStatus.message]),
+                  ]
+                ),
+              ]
+              : []),
+            ...(orientations.length
+              ? [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                  el("div", { class: "flex items-start justify-between gap-3" }, [
+                    el("div", {}, [
+                      el("div", { class: "text-sm font-semibold tracking-tight" }, ["Orientation from teacher"]),
+                      el("div", { class: "mt-1 text-sm text-slate-600" }, [
+                        "Listen to the latest orientation message for this cycle.",
+                      ]),
+                    ]),
+                    pill("New", "info"),
+                  ]),
+                  el("div", { class: "mt-3 space-y-3" }, [
+                    ...orientations.map((o) => orientationCard(o)),
+                  ]),
+                ]),
+              ]
+              : []),
+            ...(reminders.length
+              ? [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                  el("div", { class: "flex items-start justify-between gap-3" }, [
+                    el("div", {}, [
+                      el("div", { class: "text-sm font-semibold tracking-tight" }, ["Review reminders (from calendar PDF)"]),
+                      el("div", { class: "mt-1 text-sm text-slate-600" }, [
+                        "These are generated by admin from the uploaded academic calendar.",
+                      ]),
+                    ]),
+                    el("button", {
+                      class:
+                        "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+                      type: "button",
+                      onClick: () => setRoute("reminders"),
+                    }, ["View all"]),
+                  ]),
+                  el("div", { class: "mt-3 space-y-3" }, reminders.map((r) => studentReminderCard(r))),
+                ]),
+              ]
+              : []),
+            ...(mailNotes.length
+              ? [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                  el("div", { class: "flex flex-wrap items-start justify-between gap-3" }, [
+                    el("div", {}, [
+                      el("div", { class: "text-sm font-semibold tracking-tight" }, ["Teacher emails (live)"]),
+                      el("div", { class: "mt-1 text-sm text-slate-600" }, [
+                        "SMTP mail with instant notification delivery.",
+                      ]),
+                    ]),
+                    el("button", {
+                      class:
+                        "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-slate-50",
+                      type: "button",
+                      onClick: () => setRoute("notifications"),
+                    }, ["Open inbox"]),
+                  ]),
+                  el("div", { class: "mt-3 space-y-3" }, mailNotes.map((n) => mailNotificationCard(n, false))),
+                ]),
+              ]
+              : []),
+            el("div", { class: "grid grid-cols-1 gap-4 sm:grid-cols-2" }, [
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                el("div", { class: "flex items-start justify-between gap-3" }, [
+                  el("div", {}, [
+                    el("div", { class: "text-sm font-semibold" }, ["My Group"]),
+                    el("div", { class: "mt-1 text-sm text-slate-600" }, ["CSE6-A-014 · 4/4 members"]),
+                    el("div", { class: "mt-3 flex flex-wrap gap-2" }, [
+                      pill("Submitted prefs", "ok"),
+                      pill("Avg CGPA 9.12", "neutral"),
+                    ]),
+                  ]),
+                  button("Open", "secondary"),
+                ]),
+              ]),
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+                el("div", { class: "text-sm font-semibold" }, ["Next review"]),
+                el("div", { class: "mt-2 text-2xl font-semibold tracking-tight mono" }, ["R0"]),
+                el("div", { class: "mt-1 text-sm text-slate-600" }, ["2026-04-20 10:30 · Seminar Hall 2"]),
+                el("div", { class: "mt-3 flex flex-wrap gap-2" }, [
+                  pill("15-day reminder queued", "info"),
+                  pill("7-day reminder queued", "info"),
+                ]),
+              ]),
+            ]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              sectionTitle("Quick actions", "Self-form groups, invite members, then submit domain + 6 guide preferences.", [
+                button("Create group", "primary"),
+                button("View invites", "secondary"),
+              ]),
+              el("div", { class: "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3" }, [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-xs font-semibold uppercase tracking-wider text-slate-500" }, ["Step 1"]),
+                  el("div", { class: "mt-1 text-sm font-semibold" }, ["Form group (4 members)"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["Invite by USN/email and accept invites."]),
+                ]),
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-xs font-semibold uppercase tracking-wider text-slate-500" }, ["Step 2"]),
+                  el("div", { class: "mt-1 text-sm font-semibold" }, ["Choose domain + statement"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["See possible duplicates before final submit."]),
+                ]),
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-xs font-semibold uppercase tracking-wider text-slate-500" }, ["Step 3"]),
+                  el("div", { class: "mt-1 text-sm font-semibold" }, ["Rank 6 guide preferences"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["Exactly 6, no duplicates, domain-filtered."]),
+                ]),
+              ]),
+            ]),
+          ]);
+        },
+        "my-group"() {
+          setHeader("My Group", "Members, average CGPA, domain, and submission lock state.");
+          return el("div", { class: "space-y-6" }, [
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "flex flex-wrap items-start justify-between gap-3" }, [
+                el("div", {}, [
+                  el("div", { class: "text-sm font-semibold" }, ["CSE6-A-014"]),
+                  el("div", { class: "mt-1 text-sm text-slate-600" }, ["Domain: AI/ML · Status: Submitted preferences"]),
+                ]),
+                el("div", { class: "flex flex-wrap gap-2" }, [
+                  pill("Members 4/4", "ok"),
+                  pill("Avg CGPA 9.12", "neutral"),
+                  pill("Locked", "info"),
+                ]),
+              ]),
+              el("div", { class: "mt-4" }, [
+                table(
+                  ["Member", "USN", "CGPA", "Role"],
+                  [
+                    ["Nisha P", "1XY23CS014", "9.36", pill("Leader", "info")],
+                    ["Karthik R", "1XY23CS028", "9.18", pill("Member", "neutral")],
+                    ["Sahil T", "1XY23CS041", "8.90", pill("Member", "neutral")],
+                    ["Meera S", "1XY23CS056", "9.04", pill("Member", "neutral")],
+                  ]
+                ),
+              ]),
+            ]),
+          ]);
+        },
+        invites() {
+          setHeader("Form Group & Invites", "Send requests to other students and manage incoming invites. Maximum 4 members per group.");
+
+          // Mock state for selecting students
+          const availableStudents = loadStudents().filter(s => s.cycle === state.cycle && s.usn !== "1XY23CS014"); // Exclude self
+          let selectedUsns = [];
+
+          const renderCart = () => {
+            const cartArea = document.getElementById("student-cart-area");
+            if (!cartArea) return;
+            cartArea.innerHTML = "";
+            if (selectedUsns.length === 0) {
+              cartArea.appendChild(el("div", { class: "text-sm text-slate-500 italic p-6 text-center border-2 border-dashed border-slate-200 bg-slate-50 rounded-xl" }, ["No students selected yet."]));
+            } else {
+              const selectedStudents = availableStudents.filter(s => selectedUsns.includes(s.usn));
+              selectedStudents.forEach(s => {
+                const row = el("div", { class: "flex items-center justify-between p-3 mb-2 bg-white shadow-sm border border-brand-100 rounded-xl hover:-translate-y-0.5 transition-transform duration-300" }, [
+                  el("div", {}, [
+                    el("div", { class: "text-sm font-bold text-slate-800" }, [s.fullName]),
+                    el("div", { class: "text-xs text-brand-600 font-medium" }, [s.usn]),
+                  ]),
+                  el("button", {
+                    class: "text-rose-600 text-sm font-bold bg-rose-50 px-3 py-1.5 rounded-lg hover:bg-rose-100 hover:text-rose-800 transition-colors",
+                    onClick: () => {
+                      selectedUsns = selectedUsns.filter(u => u !== s.usn);
+                      renderCart();
+                      renderStudentsList();
+                    }
+                  }, ["Remove"])
+                ]);
+                cartArea.appendChild(row);
+              });
+            }
+          };
+
+          const renderStudentsList = () => {
+            const studentListArea = document.getElementById("student-list-area");
+            const searchInput = document.getElementById("student-search-input");
+            if (!studentListArea || !searchInput) return;
+
+            studentListArea.innerHTML = "";
+            const q = searchInput.value.toLowerCase();
+            const filtered = availableStudents.filter(s =>
+              !selectedUsns.includes(s.usn) &&
+              (s.fullName.toLowerCase().includes(q) || s.usn.toLowerCase().includes(q))
+            );
+            if (filtered.length === 0) {
+              studentListArea.appendChild(el("div", { class: "text-sm text-slate-500 italic p-4 text-center" }, ["No more students available."]));
+            } else {
+              filtered.slice(0, 10).forEach(s => {
+                const row = el("div", { class: "flex items-center justify-between p-3 mb-2 border border-slate-100 rounded-xl hover:bg-slate-50 hover:border-brand-200 transition-all duration-300 group" }, [
+                  el("div", {}, [
+                    el("div", { class: "text-sm font-bold text-slate-800 group-hover:text-brand-700 transition-colors" }, [s.fullName]),
+                    el("div", { class: "text-xs text-slate-500 flex gap-2" }, [
+                      el("span", { class: "font-medium" }, [s.usn]),
+                      "•",
+                      el("span", { class: "text-amber-600 tracking-wide font-medium" }, ["CGPA " + s.cgpa]),
+                    ]),
+                  ]),
+                  el("button", {
+                    class: "bg-brand-50 text-brand-700 border border-brand-200 px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-brand-600 hover:text-white transition-colors duration-300 shadow-sm",
+                    onClick: () => {
+                      if (selectedUsns.length >= 3) {
+                        alert("You can only invite up to 3 members (4 members total in a group).");
+                        return;
+                      }
+                      selectedUsns.push(s.usn);
+                      renderCart();
+                      renderStudentsList();
+                    }
+                  }, ["Invite"])
+                ]);
+                studentListArea.appendChild(row);
+              });
+            }
+          };
+
+          setTimeout(() => {
+            renderCart();
+            renderStudentsList();
+          }, 0);
+
+          return el("div", { class: "space-y-6" }, [
+            el("div", { class: "grid grid-cols-1 lg:grid-cols-2 gap-6" }, [
+              // Invite logic
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-xl p-5 shadow-sm hover:shadow-md transition-shadow" }, [
+                el("div", { class: "text-lg font-bold mb-1 text-slate-800 tracking-tight" }, ["Search Available Students"]),
+                el("div", { class: "text-sm text-slate-600 mb-4" }, ["Find students who don't have a group yet."]),
+                el("input", {
+                  id: "student-search-input",
+                  class: "w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm placeholder:text-slate-400 font-medium",
+                  placeholder: "Search by Name or USN...",
+                  onInput: () => renderStudentsList()
+                }),
+                el("div", { id: "student-list-area", class: "mt-4 max-h-[350px] overflow-y-auto pr-1" })
+              ]),
+              // Cart Logic
+              el("div", { class: "rounded-2xl border-2 border-brand-100 bg-gradient-to-b from-brand-50 to-white p-5 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300" }, [
+                el("div", {}, [
+                  el("div", { class: "text-lg font-bold mb-1 text-brand-900 tracking-tight" }, ["Group Invites Cart"]),
+                  el("div", { class: "text-sm text-brand-700 mb-4 font-medium" }, ["Select up to 3 students to form a max-4-person group."]),
+                  el("div", { id: "student-cart-area", class: "mt-2" })
+                ]),
+                el("div", { class: "mt-6 pt-5 border-t border-brand-200 flex justify-end" }, [
+                  el("button", {
+                    class: "bg-gradient-to-r from-brand-600 to-brand-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:from-brand-700 hover:to-brand-600 shadow-brand transition-all active:scale-[0.98] border border-transparent shadow-glow flex items-center gap-2",
+                    onClick: () => {
+                      if (selectedUsns.length === 0) {
+                        alert("Please select at least 1 student to invite.");
+                        return;
+                      }
+                      alert(`Invites successfully sent to ${selectedUsns.length} student(s)!`);
+                      selectedUsns = [];
+                      renderCart();
+                      renderStudentsList();
+                    }
+                  }, ["Send Group Invites ->"])
+                ])
+              ]),
+            ]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white/90 backdrop-blur p-5 shadow-sm" }, [
+              sectionTitle("Incoming invites", "Manage your pending group invitations. Accepting one validates it and removes others."),
+              table(
+                ["From", "Group", "Expires", "Action", "Status"],
+                [
+                  ["Nisha P", "CSE6-A-014", "in 18h", button("Accept", "primary"), pill("Pending", "neutral")],
+                  ["Rahul V", "CSE6-A-019", "in 6h", button("Reject", "secondary"), pill("Pending", "neutral")],
+                ]
+              ),
+            ])
+          ]);
+        },
+        domain() {
+          setHeader("Domain & Problem Statement", "Pick domain/cluster and submit statement with duplicate hints.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Domain selection", "Domain cards (prototype)"),
+            el("div", { class: "grid grid-cols-1 gap-3 sm:grid-cols-3" }, [
+              el("div", { class: "rounded-2xl border border-brand-200 bg-brand-50 p-4" }, [
+                el("div", { class: "text-sm font-semibold text-brand-900" }, ["AI/ML"]),
+                el("div", { class: "mt-1 text-sm text-brand-800" }, ["Computer vision, NLP, forecasting, recommender."]),
+              ]),
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4" }, [
+                el("div", { class: "text-sm font-semibold" }, ["Web"]),
+                el("div", { class: "mt-1 text-sm text-slate-600" }, ["Dashboards, portals, analytics, APIs."]),
+              ]),
+              el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4" }, [
+                el("div", { class: "text-sm font-semibold" }, ["IoT"]),
+                el("div", { class: "mt-1 text-sm text-slate-600" }, ["Sensors, monitoring, automation, edge devices."]),
+              ]),
+            ]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold" }, ["Problem statement (prototype)"]),
+              el("div", { class: "mt-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700" }, [
+                "Build a face recognition attendance system with anti-spoofing and reporting dashboards.",
+              ]),
+              el("div", { class: "mt-3 flex flex-wrap items-center gap-2" }, [
+                pill("Potential duplicate found", "warn"),
+                el("span", { class: "text-sm text-slate-600" }, [
+                  "Similar to: “Smart Attendance via Face Recognition” (82%).",
+                ]),
+              ]),
+            ]),
+          ]);
+        },
+        preferences() {
+          setHeader("Guide Preferences (1–6)", "Rank exactly 6 guides from your domain pool.");
+
+          const availableGuides = [
+            "Dr. Ananya Rao - AI/ML",
+            "Mr. Vivek H - AI/ML",
+            "Prof. Lakshmi P - AI/ML",
+            "Ms. Ritu S - AI/ML",
+            "Dr. Sameer K - AI/ML",
+            "Mr. Naveen D - AI/ML",
+            "Dr. Ramesh B - AI/ML",
+            "Ms. Kavya T - AI/ML"
+          ];
+
+          let selectedGuides = [null, null, null, null, null, null];
+
+          const renderSelectors = () => {
+            const selectorsArea = document.getElementById("selectors-area");
+            if (!selectorsArea) return;
+            selectorsArea.innerHTML = "";
+
+            for (let i = 0; i < 6; i++) {
+              const isActive = selectedGuides[i] !== null;
+              const rowClass = isActive
+                ? "flex items-center gap-4 bg-brand-50/50 p-3.5 border-2 border-brand-400 rounded-xl shadow-glow transition-all duration-300 transform scale-[1.01]"
+                : "flex items-center gap-4 bg-white p-3.5 border-2 border-slate-200 rounded-xl shadow-sm hover:border-brand-300 transition-all duration-300";
+
+              const row = el("div", { class: rowClass });
+
+              const rankLabel = el("div", {
+                class: `w-9 h-9 rounded-full flex items-center justify-center font-bold shadow-sm ${isActive ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-500'}`
+              }, [(i + 1).toString()]);
+
+              const select = el("select", {
+                class: "flex-1 outline-none text-base bg-transparent font-semibold text-slate-800 cursor-pointer appearance-none",
+                onChange: (e) => {
+                  const val = e.target.value;
+                  if (val === "") {
+                    selectedGuides[i] = null;
+                  } else {
+                    selectedGuides[i] = val;
+                  }
+                  renderSelectors();
+                }
+              });
+
+              select.appendChild(el("option", { value: "", disabled: true, selected: !selectedGuides[i] }, ["-- Select a Guide --"]));
+
+              availableGuides.forEach(guide => {
+                const isChosenElsewhere = selectedGuides.includes(guide) && selectedGuides[i] !== guide;
+
+                const optAttrs = { value: guide, class: "font-medium" };
+                if (isChosenElsewhere) {
+                  optAttrs.disabled = true;
+                }
+                if (selectedGuides[i] === guide) {
+                  optAttrs.selected = true;
+                }
+
+                const text = isChosenElsewhere ? `${guide} (Already Ranked)` : guide;
+                select.appendChild(el("option", optAttrs, [text]));
+              });
+
+              // Add a tiny chevron icon mentally via class or just visual spacing, CSS handled nicely.
+
+              row.appendChild(rankLabel);
+              row.appendChild(select);
+              selectorsArea.appendChild(row);
+            }
+          };
+
+          setTimeout(renderSelectors, 0);
+
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Preference ranking", "Select exactly 6 unique guides. Once ranked, the duplicated guide gets disabled universally."),
+            el("div", { class: "max-w-2xl bg-white/80 backdrop-blur p-6 rounded-2xl border border-slate-200 shadow-xl relative overflow-hidden" }, [
+              el("div", { class: "pointer-events-none absolute -top-24 -right-24 w-64 h-64 bg-brand-400 opacity-10 rounded-full blur-3xl" }),
+              el("div", { id: "selectors-area", class: "space-y-4 relative z-10" }),
+
+              el("div", { class: "mt-8 flex flex-wrap gap-4 justify-end border-t border-slate-100 pt-6 relative z-10" }, [
+                button("Save draft", "secondary"),
+                el("button", {
+                  class: "rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 px-6 py-3 text-sm font-bold text-white shadow-brand hover:from-brand-700 hover:to-brand-600 transition-all active:scale-[0.98] shadow-glow",
+                  onClick: () => {
+                    const filled = selectedGuides.filter(g => g !== null);
+                    if (filled.length < 6) {
+                      alert(`Please fill all 6 preferences. You have only selected ${filled.length}.`);
+                      return;
+                    }
+                    alert("Preferences successfully submitted! They are now locked.");
+                  }
+                }, ["Submit Preferences (Locks forever)"])
+              ]),
+            ])
+          ]);
+        },
+        timeline() {
+          setHeader("Review Timeline", "R0 → P1 → P2 schedule with reminders and outcomes.");
+          return el("div", { class: "space-y-6" }, [
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold" }, ["CSE6-A-014 · AI/ML"]),
+              el("div", { class: "mt-4 space-y-3" }, [
+                el("div", { class: "flex items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", {}, [
+                    el("div", { class: "text-sm font-semibold" }, ["Review 0 (R0)"]),
+                    el("div", { class: "mt-1 text-sm text-slate-600" }, ["2026-04-20 10:30 · Seminar Hall 2"]),
+                  ]),
+                  pill("Scheduled", "ok"),
+                ]),
+                el("div", { class: "flex items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3" }, [
+                  el("div", {}, [
+                    el("div", { class: "text-sm font-semibold" }, ["Phase 1 (P1)"]),
+                    el("div", { class: "mt-1 text-sm text-slate-600" }, ["Not scheduled yet"]),
+                  ]),
+                  pill("Pending", "neutral"),
+                ]),
+                el("div", { class: "flex items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3" }, [
+                  el("div", {}, [
+                    el("div", { class: "text-sm font-semibold" }, ["Phase 2 (P2)"]),
+                    el("div", { class: "mt-1 text-sm text-slate-600" }, ["Not scheduled yet"]),
+                  ]),
+                  pill("Pending", "neutral"),
+                ]),
+              ]),
+            ]),
+          ]);
+        },
+        reminders() {
+          setHeader("Reminders", "7-day reminders generated from the admin-uploaded calendar PDF.");
+          const reminders = getStudentRemindersForCycle(state.cycle);
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle(
+              "All reminders",
+              "Status becomes DUE when the reminder time is reached (based on your PC clock).",
+              []
+            ),
+            reminders.length
+              ? el("div", { class: "space-y-3" }, reminders.map((r) => studentReminderCard(r)))
+              : el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" }, [
+                "No reminders yet. Ask admin to upload the calendar PDF and generate reminders.",
+              ]),
+          ]);
+        },
+        notifications() {
+          setHeader("Notifications", "Real-time email alerts from your teacher.");
+          ensureDemoStudents();
+          const inboxEl = el("div", { class: "space-y-3" }, []);
+          const connEl = el("div", { class: "text-sm text-slate-600" }, ["Connecting…"]);
+
+          const emailSelect = el("select", {
+            class:
+              "mt-1 w-full max-w-md rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-200",
+            onChange: (e) => {
+              setStudentViewerEmail(e.target.value);
+              setupInbox();
+            },
+          }, []);
+
+          loadStudents()
+            .filter((s) => s.cycle === state.cycle)
+            .forEach((s) => {
+              const em = normalizeEmail(s.email);
+              emailSelect.appendChild(
+                el("option", { value: em, selected: em === getStudentViewerEmail() ? "selected" : undefined }, [
+                  `${s.fullName} · ${em}`,
+                ])
+              );
+            });
+
+          async function setupInbox() {
+            const email = getStudentViewerEmail();
+            inboxEl.innerHTML = "";
+            const ok = await refreshMailConnection();
+            if (!ok) {
+              connEl.textContent = "Mail server offline — showing saved notifications only.";
+              connEl.className = "text-sm text-amber-800";
+            } else {
+              connEl.textContent = mailState.connected
+                ? `Live · subscribed as ${email}`
+                : `Server up · live stream active`;
+              connEl.className = "text-sm text-emerald-800";
+              connectMailRealtime(email, () => setupInbox());
+            }
+            let list = getLocalNotificationsForStudent(email, state.cycle);
+            try {
+              const remote = await fetchServerNotifications(email, state.cycle);
+              remote.forEach((n) => upsertLocalMailNotification(n));
+              list = getLocalNotificationsForStudent(email, state.cycle);
+            } catch { /* use local only */ }
+            if (!list.length) {
+              inboxEl.appendChild(
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" }, [
+                  "No emails yet. Ask faculty to send from Mail Center while you keep this page open.",
+                ])
+              );
+              return;
+            }
+            list.forEach((n) => inboxEl.appendChild(mailNotificationCard(n, true)));
+          }
+
+          setupInbox();
+
+          return el("div", { class: "space-y-6" }, [
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              sectionTitle("Your inbox", "Pick your student email to receive real-time teacher mail."),
+              el("div", { class: "mt-3" }, [
+                el("div", { class: "text-sm font-medium text-slate-700" }, ["Viewing as"]),
+                emailSelect,
+              ]),
+              el("div", { class: "mt-2" }, [connEl]),
+            ]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "text-sm font-semibold tracking-tight" }, ["Messages"]),
+              el("div", { class: "mt-3" }, [inboxEl]),
+            ]),
+          ]);
+        },
+      };
+      return (pages[route] || pages.dashboard)();
+    }
+
+    function renderFaculty(route) {
+      const pages = {
+        dashboard() {
+          setHeader("Faculty Dashboard", "Assigned groups, upcoming sessions, and quick marking actions.");
+          return el("div", { class: "space-y-6" }, [
+            el("div", { class: "grid grid-cols-1 gap-4 sm:grid-cols-2" }, [
+              card("Assigned Groups", "2", "current cycle", "info"),
+              card("Upcoming Reviews", "3", "next 14 days", "ok"),
+            ]),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              sectionTitle("Upcoming review sessions", "Mark attendance and evaluations in one flow."),
+              table(
+                ["When", "Phase", "Group", "Venue", "Action"],
+                [
+                  ["2026-04-20 10:30", "R0", "CSE6-A-014", "Seminar Hall 2", button("Open session", "primary")],
+                  ["2026-04-20 11:10", "R0", "CSE6-A-021", "Lab 3", button("Open session", "secondary")],
+                ]
+              ),
+            ]),
+          ]);
+        },
+        orientation() {
+          // Same as admin orientation page but with faculty wording
+          setHeader("Orientation", "Post an orientation (text/audio) for students in this cycle.");
+          return renderAdmin("orientation");
+        },
+        "mail-service"() {
+          setHeader("Mail Center", "Email your assigned students — delivered via SMTP with instant in-app alerts.");
+          return renderMailCenter("Faculty");
+        },
+        assigned() {
+          setHeader("Assigned Groups", "List of groups mapped to you after allocation.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("My groups", "View members, statement, and progress."),
+            table(
+              ["Group", "Domain", "Members", "Status", "Open"],
+              [
+                ["CSE6-A-014", "AI/ML", "4", pill("R0 scheduled", "ok"), button("Open", "secondary")],
+                ["CSE6-A-021", "AI/ML", "4", pill("Prefs submitted", "neutral"), button("Open", "secondary")],
+              ]
+            ),
+          ]);
+        },
+        "review-sessions"() {
+          setHeader("Review Sessions", "Schedule view scoped to your assigned groups.");
+          return pages.dashboard();
+        },
+        "mark-attendance"() {
+          setHeader("Mark Attendance", "Batch-wise attendance marking (per review session).");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("R0 · Seminar Hall 2", "Mark present/absent for all 4 students, then save."),
+            table(
+              ["Student", "USN", "Present?"],
+              [
+                ["Nisha P", "1XY23CS014", pill("Present", "ok")],
+                ["Karthik R", "1XY23CS028", pill("Present", "ok")],
+                ["Sahil T", "1XY23CS041", pill("Absent", "bad")],
+                ["Meera S", "1XY23CS056", pill("Present", "ok")],
+              ]
+            ),
+            el("div", { class: "flex flex-wrap gap-2" }, [button("Save attendance", "primary"), button("Cancel", "secondary")]),
+          ]);
+        },
+        evaluate() {
+          setHeader("Evaluate Groups", "Enter score + remarks; exportable for admin.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Evaluation form (prototype)", "Score and remarks saved per group per phase."),
+            el("div", { class: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" }, [
+              el("div", { class: "grid grid-cols-1 gap-4 sm:grid-cols-2" }, [
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-xs text-slate-500" }, ["Group"]),
+                  el("div", { class: "mt-1 text-sm font-semibold" }, ["CSE6-A-014"]),
+                  el("div", { class: "mt-2 text-sm text-slate-600" }, ["Phase: R0"]),
+                ]),
+                el("div", { class: "rounded-2xl border border-slate-200 bg-slate-50 p-3" }, [
+                  el("div", { class: "text-xs text-slate-500" }, ["Score"]),
+                  el("div", { class: "mt-1 text-2xl font-semibold mono" }, ["7.5"]),
+                  el("div", { class: "mt-2 text-sm text-slate-600" }, ["Remarks: refine dataset plan"]),
+                ]),
+              ]),
+              el("div", { class: "mt-4 flex flex-wrap gap-2" }, [button("Save evaluation", "primary"), button("Export", "secondary")]),
+            ]),
+          ]);
+        },
+        "title-approval"() {
+          setHeader("Title Approval", "Approve final title and register it to prevent duplicates.");
+          return el("div", { class: "space-y-6" }, [
+            sectionTitle("Pending approvals", "Approve once the statement is finalized."),
+            table(
+              ["Group", "Proposed title", "Duplicate hint", "Action"],
+              [
+                ["CSE6-A-014", "Adaptive Study Planner using ML", pill("No conflict", "ok"), button("Approve", "primary")],
+                ["CSE6-A-019", "Face Recognition Attendance", pill("Similar exists", "warn"), button("Review", "secondary")],
+              ]
+            ),
+          ]);
+        },
+      };
+      return (pages[route] || pages.dashboard)();
+    }
+
+    function setHeader(title, subtitle) {
+      document.getElementById("pageTitle").textContent = title;
+      document.getElementById("pageSubtitle").textContent = subtitle || "";
+    }
+
+    function setRole(role) {
+      state.role = role;
+      document.getElementById("navRoleBadge").textContent =
+        role.charAt(0).toUpperCase() + role.slice(1);
+      document.getElementById("roleSelect").value = role;
+      document.getElementById("roleSelectMobile").value = role;
+      renderNav();
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      document.getElementById("modeSelect").value = mode;
+      document.getElementById("modeSelectMobile").value = mode;
+      renderNav();
+      const first = (getNavItems()[0] || {}).id || "dashboard";
+      if (!getNavItems().some((x) => x.id === state.route)) setRoute(first);
+      else render();
+    }
+
+    function setCycle(cycle) {
+      state.cycle = cycle;
+      document.getElementById("cycleSelect").value = cycle;
+      document.getElementById("cycleSelectMobile").value = cycle;
+      document.getElementById("cyclePill").textContent = cycles[cycle] || cycle;
+      render();
+    }
+
+    function setRoute(route) {
+      state.route = route;
+      const url = new URL(window.location.href);
+      url.hash = `#role=${state.role}&cycle=${state.cycle}&mode=${state.mode}&page=${route}`;
+      history.replaceState(null, "", url.toString());
+      render();
+      closeMobileSheet();
+    }
+
+    function renderNav() {
+      const items = getNavItems();
+      const nav = document.getElementById("nav");
+      const navMobile = document.getElementById("navMobile");
+      nav.innerHTML = "";
+      navMobile.innerHTML = "";
+
+      const makeLink = (item) => {
+        const active = item.id === state.route;
+        return el("button", {
+          class:
+            "w-full text-left rounded-xl px-3 py-2 text-sm font-medium transition " +
+            (active
+              ? "bg-brand-50 text-brand-700 ring-1 ring-brand-100"
+              : "text-slate-700 hover:bg-slate-50"),
+          onClick: () => setRoute(item.id),
+          type: "button",
+        }, [item.label]);
+      };
+
+      items.forEach((item) => {
+        nav.appendChild(makeLink(item));
+        navMobile.appendChild(makeLink(item));
+      });
+    }
+
+    function getNavItems() {
+      const roleConfig = navByRole[state.role];
+      if (!roleConfig) return [];
+      return roleConfig[state.mode] || roleConfig.present || [];
+    }
+
+    function render() {
+      document.getElementById("statusPill").textContent = state.role === "admin"
+        ? "Admin"
+        : state.role === "student"
+          ? "Student"
+          : "Faculty";
+
+      refreshMailConnection();
+      if (state.role === "student") {
+        connectMailRealtime(getStudentViewerEmail());
+      } else {
+        disconnectMailRealtime();
+      }
+
+      const content = document.getElementById("content");
+      content.innerHTML = "";
+      const node =
+        state.role === "admin"
+          ? renderAdmin(state.route)
+          : state.role === "student"
+            ? renderStudent(state.route)
+            : renderFaculty(state.route);
+      content.appendChild(node);
+    }
+
+    function parseHash() {
+      const hash = window.location.hash.startsWith("#")
+        ? window.location.hash.slice(1)
+        : "";
+      const params = new URLSearchParams(hash.replaceAll("&", "&"));
+      const role = params.get("role");
+      const cycle = params.get("cycle");
+      const page = params.get("page");
+      const mode = params.get("mode");
+      if (role && navByRole[role]) state.role = role;
+      if (cycle && cycles[cycle]) state.cycle = cycle;
+      // Mode must be applied before validating `page`, because nav differs by mode.
+      if (mode === "present" || mode === "detailed") state.mode = mode;
+      const allowedPages = new Set(getNavItems().map((x) => x.id));
+      if (page && allowedPages.has(page)) state.route = page;
+    }
+
+    function copyShareLink() {
+      const url = new URL(window.location.href);
+      url.hash = `#role=${state.role}&cycle=${state.cycle}&mode=${state.mode}&page=${state.route}`;
+      navigator.clipboard?.writeText(url.toString());
+      const btn = document.getElementById("shareBtn");
+      const old = btn.textContent;
+      btn.textContent = "Copied!";
+      setTimeout(() => (btn.textContent = old), 900);
+    }
+
+    function openMobileSheet() {
+      document.getElementById("mobileSheet").classList.remove("hidden");
+    }
+    function closeMobileSheet() {
+      document.getElementById("mobileSheet").classList.add("hidden");
+    }
+
+    // init
+    parseHash();
+    refreshMailConnection();
+    setRole(state.role);
+    setMode(state.mode);
+    setCycle(state.cycle);
+    setRoute(state.route);
+
+    // desktop controls
+    document.getElementById("roleSelect").addEventListener("change", (e) => {
+      setRole(e.target.value);
+      setRoute("dashboard");
+    });
+    document.getElementById("cycleSelect").addEventListener("change", (e) => {
+      setCycle(e.target.value);
+    });
+    document.getElementById("modeSelect").addEventListener("change", (e) => {
+      setMode(e.target.value);
+    });
+    document.getElementById("shareBtn").addEventListener("click", copyShareLink);
+
+    // mobile controls
+    document.getElementById("mobileMenuBtn").addEventListener("click", openMobileSheet);
+    document.getElementById("mobileSheetClose").addEventListener("click", closeMobileSheet);
+    document.getElementById("mobileSheetBackdrop").addEventListener("click", closeMobileSheet);
+    document.getElementById("roleSelectMobile").addEventListener("change", (e) => {
+      setRole(e.target.value);
+      setRoute("dashboard");
+    });
+    document.getElementById("cycleSelectMobile").addEventListener("change", (e) => {
+      setCycle(e.target.value);
+    });
+    document.getElementById("modeSelectMobile").addEventListener("change", (e) => {
+      setMode(e.target.value);
+    });
+
+    window.addEventListener("hashchange", () => {
+      parseHash();
+      setRole(state.role);
+      setMode(state.mode);
+      setCycle(state.cycle);
+      renderNav();
+      render();
+    });
+  </script>
+</body>
+
+</html>
